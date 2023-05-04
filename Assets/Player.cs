@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     private Vector3 _movementDirection;
 
-    private GameObject _previousDirectionChangeObject = null;
+    private GameObject _previousDirectionChangeObject;
 
     public void Start()
     {
@@ -40,6 +40,10 @@ public class Player : MonoBehaviour
             {
                 _previousDirectionChangeObject = hitInfo.collider.GameObject();
                 ChangeDirection();
+            }
+            else
+            {
+                // TODO: Jump
             }
         }
     }
