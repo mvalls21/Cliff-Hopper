@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -8,20 +9,27 @@ public class CameraController : MonoBehaviour
 
     private readonly Vector3 _movementDirection = new Vector3(1.0f, 0.0f, 1.0f);
 
+    private Vector3 _previousPlayerMovementDirection;
+
+    private Vector3 _middlePositionCache;
+
     public void Start()
     {
+        _previousPlayerMovementDirection = Vector3.zero;
     }
 
     public void Update()
     {
         var movement = _movementDirection;
 
-        var middle = FindMiddlePlatform();
+        var middle = FindMiddleRaycast();
+        // var middle = FindMiddlePlatform();
+        
         if (middle != null)
         {
             var position = transform.position;
-            var correction = new Vector3(middle.Value.x - position.x, 0.0f,
-                middle.Value.z - position.z);
+            var correction = new Vector3(middle.x - position.x, 0.0f,
+                middle.z - position.z);
 
             correction.x += _baseTranslation.x;
             correction.z += _baseTranslation.z;
@@ -29,7 +37,7 @@ public class CameraController : MonoBehaviour
             const float strengthCorrection = 0.15f;
             movement = _movementDirection * (1.0f - strengthCorrection) + correction * strengthCorrection;
         }
-        
+
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
 
@@ -59,6 +67,38 @@ public class CameraController : MonoBehaviour
         }
 
         var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
+        return middle;
+    }
+
+    private Vector3 FindMiddleRaycast()
+    {
+        var direction = Player.GetComponent<Player>().movementDirection;
+        
+        if (direction == _previousPlayerMovementDirection)
+            return _middlePositionCache;
+
+        _previousPlayerMovementDirection = direction;
+
+        var origin = Player.transform.position;
+        origin.y -= 1;
+
+        var hits = Physics.RaycastAll(origin, direction, 100.0f);
+
+        var min = hits[0].transform.position;
+        var max = hits[0].transform.position;
+
+        for (int i = 1; i < hits.Length; ++i)
+        {
+            var child = hits[i].transform;
+            if (child.position.x < min.x || child.position.z < min.z)
+                min = child.position;
+
+            if (child.position.x > max.x || child.position.z > max.z)
+                max = child.position;
+        }
+
+        var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
+        _middlePositionCache = middle;
         return middle;
     }
 }

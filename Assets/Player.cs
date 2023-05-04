@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Vector3 _movementDirection;
+    public Vector3 movementDirection;
 
     private GameObject _previousDirectionChangeObject;
 
     public void Start()
     {
-        _movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
+        movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
     }
 
     public void Update()
     {
-        var newPosition = transform.position + _movementDirection * Time.deltaTime;
+        var newPosition = transform.position + movementDirection * Time.deltaTime;
         var centerPosition = new Vector3(Mathf.Round(newPosition.x), newPosition.y, Mathf.Round(newPosition.z));
 
         // Only apply correction to the axis where the player is not moving (to prevent stutters while moving)
         var movement = Vector3.Scale((centerPosition - transform.position),
-            (Vector3.one - _movementDirection)) + _movementDirection;
+            (Vector3.one - movementDirection)) + movementDirection;
 
         transform.Translate(movement * Time.deltaTime);
 
@@ -50,6 +50,6 @@ public class Player : MonoBehaviour
 
     private void ChangeDirection()
     {
-        _movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - _movementDirection;
+        movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
     }
 }
