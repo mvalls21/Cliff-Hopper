@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 {
     public Vector3 movementDirection;
 
+    public float speed = 2.0f;
+
     private GameObject _previousDirectionChangeObject;
 
     public void Start()
@@ -22,7 +24,7 @@ public class Player : MonoBehaviour
         var movement = Vector3.Scale((centerPosition - transform.position),
             (Vector3.one - movementDirection)) + movementDirection;
 
-        transform.Translate(movement * Time.deltaTime);
+        transform.Translate(movement * speed * Time.deltaTime);
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
         if (!hit)
