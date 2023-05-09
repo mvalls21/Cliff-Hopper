@@ -32,18 +32,18 @@ public class LevelGeneration : MonoBehaviour
                 yPos += dy;
 
                 float value = Random.value;
-                if (value <= emptyProb)
+                if (value <= emptyProb && pathNum != 0)
                 {
                     dy = 0.0f;
                     continue;
                 }
-                else if (value <= emptyProb + spikesProb && value >= emptyProb)
+                else if (value <= emptyProb + spikesProb && value >= emptyProb && pathNum != 0)
                 {
                     dy = 0.0f;
                     obj = Instantiate(spikesPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
                 }
-                else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb)
+                else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb && pathNum != 0)
                 {
                     dy = -0.5f;
                     obj = Instantiate(slopePrefab);
