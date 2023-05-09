@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
 
     private readonly Vector3 _baseTranslation = new Vector3(10.0f, 9.0f, 7.0f);
 
-    private readonly Vector3 _movementDirection = new Vector3(1.0f, 0.0f, 1.0f);
+    private readonly Vector3 _movementDirection = new Vector3(0.5f, 0.0f, 0.5f);
 
     private Vector3 _previousPlayerMovementDirection;
 
@@ -22,21 +22,18 @@ public class CameraController : MonoBehaviour
     {
         var movement = _movementDirection;
 
-        var middle = FindMiddleRaycast();
+        var middle = FindMiddlePlatformRaycast();
         // var middle = FindMiddlePlatform();
-        
-        if (middle != null)
-        {
-            var position = transform.position;
-            var correction = new Vector3(middle.x - position.x, 0.0f,
-                middle.z - position.z);
 
-            correction.x += _baseTranslation.x;
-            correction.z += _baseTranslation.z;
+        var position = transform.position;
+        var correction = new Vector3(middle.x - position.x, 0.0f,
+            middle.z - position.z);
 
-            const float strengthCorrection = 0.15f;
-            movement = _movementDirection * (1.0f - strengthCorrection) + correction * strengthCorrection;
-        }
+        correction.x += _baseTranslation.x;
+        correction.z += _baseTranslation.z;
+
+        const float strengthCorrection = 0.15f;
+        movement = _movementDirection * (1.0f - strengthCorrection) + correction * strengthCorrection;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
@@ -45,6 +42,7 @@ public class CameraController : MonoBehaviour
         transform.rotation = currentRotation;
     }
 
+    /*
     private Vector3? FindMiddlePlatform()
     {
         var hit = Physics.Raycast(Player.transform.position, Vector3.down, out RaycastHit hitInfo);
@@ -69,11 +67,12 @@ public class CameraController : MonoBehaviour
         var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
         return middle;
     }
+    */
 
-    private Vector3 FindMiddleRaycast()
+    private Vector3 FindMiddlePlatformRaycast()
     {
         var direction = Player.GetComponent<Player>().movementDirection;
-        
+
         if (direction == _previousPlayerMovementDirection)
             return _middlePositionCache;
 
@@ -82,10 +81,20 @@ public class CameraController : MonoBehaviour
         var origin = Player.transform.position;
         origin.y -= 1;
 
-        var hits = Physics.RaycastAll(origin, direction, 100.0f);
+        FindMinMaxPlatformsRaycast(origin, direction, 100.0f, out Vector3 min, out Vector3 max);
 
-        var min = hits[0].transform.position;
-        var max = hits[0].transform.position;
+        var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
+        _middlePositionCache = middle;
+        return middle;
+    }
+
+    private void FindMinMaxPlatformsRaycast(Vector3 origin, Vector3 direction, float maxDistance, out Vector3 min,
+        out Vector3 max)
+    {
+        var hits = Physics.RaycastAll(origin, direction, maxDistance);
+
+        min = hits[0].transform.position;
+        max = hits[0].transform.position;
 
         for (int i = 1; i < hits.Length; ++i)
         {
@@ -96,9 +105,5 @@ public class CameraController : MonoBehaviour
             if (child.position.x > max.x || child.position.z > max.z)
                 max = child.position;
         }
-
-        var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
-        _middlePositionCache = middle;
-        return middle;
     }
 }
