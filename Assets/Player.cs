@@ -10,6 +10,10 @@ public class Player : MonoBehaviour
 
     private GameObject _previousDirectionChangeObject;
 
+    private int _jumpCounter = 0;
+
+    private bool _spacePressed = false;
+
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
@@ -30,28 +34,40 @@ public class Player : MonoBehaviour
         if (!hit)
         {
             // TODO: Player fell of the map = dead
-            Destroy(this.GameObject());
+            // Destroy(this.GameObject());
+            return;
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && !_spacePressed)
         {
             if (!hit) throw new InvalidOperationException();
 
             var objectTag = hitInfo.collider.GameObject().tag;
-            if (objectTag == "DirectionChange" && _previousDirectionChangeObject != hitInfo.collider.GameObject())
+            if (objectTag == "DirectionChange" && _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
+                _jumpCounter == 0)
             {
                 _previousDirectionChangeObject = hitInfo.collider.GameObject();
                 ChangeDirection();
             }
-            else
+            else if (_jumpCounter < 2)
             {
-                // TODO: Jump
+                var rigidbody = GetComponent<Rigidbody>();
+                // rigidbody.AddForce(new Vector3(0.0f, 4.0f, 0.0f), ForceMode.Impulse);
+                rigidbody.velocity = Vector3.up * 4.0f;
+                _jumpCounter++;
             }
         }
+
+        _spacePressed = Input.GetKey(KeyCode.Space);
     }
 
     private void ChangeDirection()
     {
         movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
+    }
+
+    public void OnCollisionEnter(Collision _)
+    {
+        _jumpCounter = 0;
     }
 }

@@ -27,18 +27,19 @@ public class CameraController : MonoBehaviour
         // var middle = FindMiddlePlatform();
 
         var position = transform.position;
-        var correction = new Vector3(middle.x - position.x, 0.0f,
+        var correction = new Vector3(middle.x - position.x, middle.y - position.y,
             middle.z - position.z);
 
-        correction.x += _baseTranslation.x;
-        correction.z += _baseTranslation.z;
+        // correction.x += _baseTranslation.x;
+        // correction.z += _baseTranslation.z;
+        correction += _baseTranslation;
 
         var correctionDirection = correction.normalized;
 
         // const float strengthCorrection = 0.05f;
         // var movement = _movementDirection * (1.0f - strengthCorrection) + correction * strengthCorrection;
         var playerSpeed = playerScript.speed / 2.0f;
-        var movement = _movementDirection * playerSpeed + correctionDirection * 0.1f;
+        var movement = _movementDirection * playerSpeed + correctionDirection * 0.30f;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
