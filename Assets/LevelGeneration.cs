@@ -60,6 +60,7 @@ public class LevelGeneration : MonoBehaviour
 
             xPos += dx;
             zPos += dz;
+            yPos += dy;
             obj = (GameObject)Instantiate(changeDirectionPrefab);
             obj.transform.Translate(xPos, yPos, zPos);
             obj.transform.parent = transform;
