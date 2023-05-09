@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class LevelGeneration : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class LevelGeneration : MonoBehaviour
         xPos = zPos = yPos = 0.0f;
 
         obj = (GameObject)Instantiate(changeDirectionPrefab);
-        obj.transform.Translate(xPos, yPos, zPos);
+        obj.transform.position = new Vector3(xPos, yPos, zPos);
         obj.transform.parent = transform;
 
         for (uint pathNum = 0; pathNum < 30; ++pathNum)
@@ -25,8 +26,8 @@ public class LevelGeneration : MonoBehaviour
             float dx = (float)(pathNum%2);
             float dz = (float)(1 - pathNum%2);
             float dy = 0.0f;
-
-            for (uint blockNum = 0; blockNum < 5; ++blockNum)
+            
+            for (uint blockNum = 0; blockNum < Random.Range(4, 8); ++blockNum) // between 4 and 7 blocks
             {
                 xPos += dx;
                 zPos += dz;
@@ -54,7 +55,7 @@ public class LevelGeneration : MonoBehaviour
                     obj = (GameObject)Instantiate(normalPrefab);
                 }
                 
-                obj.transform.Translate(xPos, yPos, zPos);
+                obj.transform.position = new Vector3(xPos, yPos, zPos);
                 obj.transform.parent = transform;
             }
 
@@ -62,7 +63,7 @@ public class LevelGeneration : MonoBehaviour
             zPos += dz;
             yPos += dy;
             obj = (GameObject)Instantiate(changeDirectionPrefab);
-            obj.transform.Translate(xPos, yPos, zPos);
+            obj.transform.position = new Vector3(xPos, yPos, zPos);
             obj.transform.parent = transform;
         }
     }
