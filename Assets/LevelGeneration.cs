@@ -15,7 +15,14 @@ public class LevelGeneration : MonoBehaviour
         float xPos, zPos, yPos;
         xPos = zPos = yPos = 0.0f;
 
-        obj = Instantiate(changeDirectionPrefab);
+        // Temporal
+        Instantiate(normalPrefab, new Vector3(0.0f, 0.0f, -5.0f), Quaternion.identity);
+        Instantiate(normalPrefab, new Vector3(0.0f, 0.0f, -4.0f), Quaternion.identity);
+        Instantiate(normalPrefab, new Vector3(0.0f, 0.0f, -3.0f), Quaternion.identity);
+        Instantiate(normalPrefab, new Vector3(0.0f, 0.0f, -2.0f), Quaternion.identity);
+        Instantiate(normalPrefab, new Vector3(0.0f, 0.0f, -1.0f), Quaternion.identity);
+
+        obj = Instantiate(normalPrefab);
         obj.transform.position = new Vector3(xPos, yPos, zPos);
         obj.transform.parent = transform;
 
@@ -25,7 +32,7 @@ public class LevelGeneration : MonoBehaviour
             float dz = 1 - pathNum % 2;
             float dy = 0.0f;
 
-            for (uint blockNum = 0; blockNum < Random.Range(4, 8); ++blockNum) // between 4 and 7 blocks
+            for (uint blockNum = 0; blockNum < Random.Range(1, 8); ++blockNum) // between 1 and 7 blocks
             {
                 xPos += dx;
                 zPos += dz;
