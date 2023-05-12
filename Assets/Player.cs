@@ -1,5 +1,6 @@
 using System;
 using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -38,12 +39,20 @@ public class Player : MonoBehaviour
             return;
         }
 
+        if (hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
+        {
+            var rigidBody = GetComponent<Rigidbody>();
+            rigidBody.AddForce(new Vector3(0.0f, 1.0f, 0.5f), ForceMode.Impulse);
+            
+            return;
+        }
+
         if (Input.GetKey(KeyCode.Space) && !_spacePressed)
         {
             if (!hit) throw new InvalidOperationException();
 
-            var objectTag = hitInfo.collider.GameObject().tag;
-            if (objectTag == "DirectionChange" && _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
+            if (hitInfo.collider.GameObject().CompareTag("DirectionChange") &&
+                _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
                 _jumpCounter == 0)
             {
                 _previousDirectionChangeObject = hitInfo.collider.GameObject();

@@ -30,16 +30,12 @@ public class CameraController : MonoBehaviour
         var correction = new Vector3(middle.x - position.x, middle.y - position.y,
             middle.z - position.z);
 
-        // correction.x += _baseTranslation.x;
-        // correction.z += _baseTranslation.z;
         correction += _baseTranslation;
 
         var correctionDirection = correction.normalized;
 
-        // const float strengthCorrection = 0.05f;
-        // var movement = _movementDirection * (1.0f - strengthCorrection) + correction * strengthCorrection;
         var playerSpeed = playerScript.speed / 2.0f;
-        var movement = _movementDirection * playerSpeed + correctionDirection * 0.30f;
+        var movement = _movementDirection * playerSpeed + correctionDirection * 0.35f;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
@@ -66,9 +62,6 @@ public class CameraController : MonoBehaviour
         }
 
         var middle = (origin + currentPosition) / 2.0f;
-
-        // FindMinMaxPlatformsRaycast(origin, direction, 100.0f, out Vector3 min, out Vector3 max);
-        // var middle = new Vector3((min.x + max.x) / 2.0f, 0.0f, (min.z + max.z) / 2.0f);
 
         _middlePositionCache = middle;
         return middle;
