@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cecdb27a2f4342478a6f4658d393240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emptyProb: 0.1
+  emptyProb: 0
   spikesProb: 0.1
   slopeProb: 0.15
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
