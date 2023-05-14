@@ -1,10 +1,11 @@
-using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class CoinController : MonoBehaviour
 {
     private Vector3 _originalPosition;
+
+    public GameManager GameManager;
     
     public void Start()
     {
@@ -23,5 +24,7 @@ public class CoinController : MonoBehaviour
     {
         if (other.GameObject().CompareTag("Player"))
             Destroy(this.GameObject());
+        
+        GameManager.IncreaseCoin();
     }
 }

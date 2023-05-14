@@ -4,6 +4,9 @@ using Random = UnityEngine.Random;
 
 public class LevelGeneration : MonoBehaviour
 {
+    public GameObject GameManagerObject;
+    private GameManager _gameManager;
+    
     public float emptyProb = 0.1f;
     public float spikesProb = 0.2f;
     public float slopeProb = 0.1f;
@@ -20,6 +23,8 @@ public class LevelGeneration : MonoBehaviour
 
     public void Start()
     {
+        _gameManager = GameManagerObject.GetComponent<GameManager>();
+        
         GameObject obj;
         float xPos, zPos, yPos;
         xPos = zPos = yPos = 0.0f;
@@ -96,6 +101,9 @@ public class LevelGeneration : MonoBehaviour
                 {
                     obj = Instantiate(coinPrefab);
                     obj.transform.position = new Vector3(xPos, yPos + 1, zPos);
+
+                    var coinController = obj.GetComponent<CoinController>();
+                    coinController.GameManager = _gameManager;
 
                     _platformsSinceCoin = 0;
                 }
