@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
         if (!hit)
         {
             // TODO: Player fell of the map = dead
+            // TODO: Actually, not true, maybe jumping over empty platform
             // Destroy(this.GameObject());
             return;
         }

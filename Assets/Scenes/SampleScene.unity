@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 225901892}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -476,10 +476,12 @@ MonoBehaviour:
   emptyProb: 0
   spikesProb: 0.1
   slopeProb: 0.15
+  coinProb: 0.1
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
   spikesPrefab: {fileID: 8175825739093076404, guid: 861ba5ca0c75f9352a5efcabecddbfb3, type: 3}
   slopePrefab: {fileID: 773842026195072642, guid: e72fa46a8dc100cecb528007ec5605ab, type: 3}
   changeDirectionPrefab: {fileID: 4036006085463490100, guid: b66f7b8829e5ae5d6b759f17a609378d, type: 3}
+  coinPrefab: {fileID: 6749102476945279890, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
 --- !u!4 &1110724294
 Transform:
   m_ObjectHideFlags: 0
