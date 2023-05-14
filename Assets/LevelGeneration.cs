@@ -6,16 +6,18 @@ public class LevelGeneration : MonoBehaviour
 {
     public GameObject GameManagerObject;
     private GameManager _gameManager;
-    
+
     public float emptyProb = 0.1f;
     public float spikesProb = 0.2f;
     public float slopeProb = 0.1f;
+    public float slowdownProb = 0.1f;
     public float coinProb = 0.1f;
 
     public GameObject normalPrefab;
     public GameObject spikesPrefab;
     public GameObject slopePrefab;
     public GameObject changeDirectionPrefab;
+    public GameObject slowdownPrefab;
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
@@ -24,7 +26,7 @@ public class LevelGeneration : MonoBehaviour
     public void Start()
     {
         _gameManager = GameManagerObject.GetComponent<GameManager>();
-        
+
         GameObject obj;
         float xPos, zPos, yPos;
         xPos = zPos = yPos = 0.0f;
@@ -58,6 +60,8 @@ public class LevelGeneration : MonoBehaviour
                 // TODO: Modify so that two empties in a row are valid
                 bool canPlaceEmpty = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
                 bool canPlaceSpikes = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+                bool canPlaceSlowdown =
+                    pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
 
                 float value = Random.value;
                 if (value <= emptyProb && canPlaceEmpty)
@@ -83,6 +87,16 @@ public class LevelGeneration : MonoBehaviour
                     obj.transform.Rotate(new Vector3(0.0f, 90.0f * dx, 0.0f));
 
                     _previousPlatform = PlatformType.Empty;
+                }
+                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb &&
+                         value >= emptyProb + spikesProb + slopeProb && canPlaceSlowdown)
+                {
+                    dy = 0.0f;
+                    obj = Instantiate(slowdownPrefab);
+                    obj.transform.position = new Vector3(xPos, yPos, zPos);
+
+                    _previousPlatform = PlatformType.Slowdown;
+                    canPlaceCoin = false;
                 }
                 else
                 {
@@ -130,6 +144,7 @@ public class LevelGeneration : MonoBehaviour
         Empty,
         Spikes,
         Slope,
+        Slowdown,
         DirectionChange,
         Normal
     }

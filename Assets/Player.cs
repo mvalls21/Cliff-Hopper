@@ -29,7 +29,28 @@ public class Player : MonoBehaviour
     {
         if (!_gameManager.IsPlayerAlive)
             return;
-        
+
+        var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
+
+        //
+        // Spike collision
+        //
+        if (hit && hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
+        {
+            var rigidBody = GetComponent<Rigidbody>();
+            rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
+
+            _gameManager.PlayerDied();
+            return;
+        }
+
+        //
+        // Movement
+        //
+        var movementSpeed = speed;
+        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0)
+            movementSpeed = speed / 2.0f;
+
         var newPosition = transform.position + movementDirection * Time.deltaTime;
         var centerPosition = new Vector3(Mathf.Round(newPosition.x), newPosition.y, Mathf.Round(newPosition.z));
 
@@ -37,29 +58,14 @@ public class Player : MonoBehaviour
         var movement = Vector3.Scale((centerPosition - transform.position),
             (Vector3.one - movementDirection)) + movementDirection;
 
-        transform.Translate(movement * speed * Time.deltaTime);
+        transform.Translate(movement * movementSpeed * Time.deltaTime);
 
-        var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
-        if (!hit)
-        {
-            // TODO: Player fell of the map = dead
-            // TODO: Actually, not true, maybe jumping over empty platform
-            
-            return;
-        }
-
-        if (hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
-        {
-            var rigidBody = GetComponent<Rigidbody>();
-            rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
-            
-            _gameManager.PlayerDied();
-            return;
-        }
-
+        // 
+        // Jump
+        //
         if (Input.GetKey(KeyCode.Space) && !_spacePressed)
         {
-            if (!hit) throw new InvalidOperationException();
+            if (!hit) return;
 
             if (hitInfo.collider.GameObject().CompareTag("DirectionChange") &&
                 _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
