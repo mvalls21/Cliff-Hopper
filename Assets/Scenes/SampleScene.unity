@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cecdb27a2f4342478a6f4658d393240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emptyProb: 0
+  emptyProb: 0.1
   spikesProb: 0.1
   slopeProb: 0.15
   coinProb: 0.1

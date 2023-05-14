@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -15,6 +16,7 @@ public class LevelGeneration : MonoBehaviour
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
+    private PlatformType _previousPlatform;
 
     public void Start()
     {
@@ -33,6 +35,8 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.position = new Vector3(xPos, yPos, zPos);
         obj.transform.parent = transform;
 
+        _previousPlatform = PlatformType.Normal;
+
         for (uint pathNum = 0; pathNum < 30; ++pathNum)
         {
             float dx = pathNum % 2;
@@ -44,21 +48,26 @@ public class LevelGeneration : MonoBehaviour
                 xPos += dx;
                 zPos += dz;
                 yPos += dy;
-                
+
                 bool canPlaceCoin = true;
+                // TODO: Modify so that two empties in a row are valid
+                bool canPlaceEmpty = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+                bool canPlaceSpikes = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
 
                 float value = Random.value;
-                if (value <= emptyProb && pathNum != 0)
+                if (value <= emptyProb && canPlaceEmpty)
                 {
                     dy = 0.0f;
+                    _previousPlatform = PlatformType.Empty;
                     continue;
                 }
-                else if (value <= emptyProb + spikesProb && value >= emptyProb && pathNum != 0)
+                else if (value <= emptyProb + spikesProb && value >= emptyProb && canPlaceSpikes)
                 {
                     dy = 0.0f;
                     obj = Instantiate(spikesPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
-                    
+
+                    _previousPlatform = PlatformType.Spikes;
                     canPlaceCoin = false;
                 }
                 else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb && pathNum != 0)
@@ -67,12 +76,16 @@ public class LevelGeneration : MonoBehaviour
                     obj = Instantiate(slopePrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
                     obj.transform.Rotate(new Vector3(0.0f, 90.0f * dx, 0.0f));
+
+                    _previousPlatform = PlatformType.Empty;
                 }
                 else
                 {
                     dy = 0.0f;
                     obj = Instantiate(normalPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
+
+                    _previousPlatform = PlatformType.Normal;
                 }
 
                 obj.transform.parent = transform;
@@ -99,11 +112,17 @@ public class LevelGeneration : MonoBehaviour
             obj = Instantiate(changeDirectionPrefab);
             obj.transform.position = new Vector3(xPos, yPos, zPos);
             obj.transform.parent = transform;
+
+            _previousPlatform = PlatformType.DirectionChange;
         }
     }
 
-    // Update is called once per frame
-    public void Update()
+    private enum PlatformType
     {
+        Empty,
+        Spikes,
+        Slope,
+        DirectionChange,
+        Normal
     }
 }
