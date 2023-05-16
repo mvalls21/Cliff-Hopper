@@ -1,6 +1,4 @@
-using System;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -77,7 +75,6 @@ public class Player : MonoBehaviour
             else if (_jumpCounter < 2)
             {
                 var rigidbody = GetComponent<Rigidbody>();
-                // rigidbody.AddForce(new Vector3(0.0f, 4.0f, 0.0f), ForceMode.Impulse);
                 rigidbody.velocity = Vector3.up * 4.0f;
                 _jumpCounter++;
             }

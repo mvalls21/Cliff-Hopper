@@ -125,7 +125,7 @@ public class LevelGeneration : MonoBehaviour
                 if (Random.value < Mathf.Max(0.0f, probabilityCoin) && canPlaceCoin)
                 {
                     obj = Instantiate(coinPrefab);
-                    obj.transform.position = new Vector3(xPos, yPos + 1, zPos);
+                    obj.transform.position = new Vector3(xPos, yPos + 1.5f, zPos);
 
                     var coinController = obj.GetComponent<CoinController>();
                     coinController.GameManager = _gameManager;
