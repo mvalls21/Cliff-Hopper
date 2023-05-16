@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour
         var correctionDirection = correction.normalized;
 
         var playerSpeed = playerScript.speed / 2.0f;
-        var movement = _movementDirection * playerSpeed + correctionDirection * 0.35f;
+        var movement = _movementDirection * playerSpeed + correctionDirection * 0.5f;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;

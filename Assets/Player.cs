@@ -11,6 +11,10 @@ public class Player : MonoBehaviour
 
     private GameObject _previousDirectionChangeObject;
 
+    public GameObject GameManagerObject;
+
+    private GameManager _gameManager;
+
     private int _jumpCounter = 0;
 
     private bool _spacePressed = false;
@@ -18,10 +22,35 @@ public class Player : MonoBehaviour
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
+        _gameManager = GameManagerObject.GetComponent<GameManager>();
     }
 
     public void Update()
     {
+        if (!_gameManager.IsPlayerAlive)
+            return;
+
+        var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
+
+        //
+        // Spike collision
+        //
+        if (hit && hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
+        {
+            var rigidBody = GetComponent<Rigidbody>();
+            rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
+
+            _gameManager.PlayerDied();
+            return;
+        }
+
+        //
+        // Movement
+        //
+        var movementSpeed = speed;
+        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0)
+            movementSpeed = speed / 2.0f;
+
         var newPosition = transform.position + movementDirection * Time.deltaTime;
         var centerPosition = new Vector3(Mathf.Round(newPosition.x), newPosition.y, Mathf.Round(newPosition.z));
 
@@ -29,27 +58,14 @@ public class Player : MonoBehaviour
         var movement = Vector3.Scale((centerPosition - transform.position),
             (Vector3.one - movementDirection)) + movementDirection;
 
-        transform.Translate(movement * speed * Time.deltaTime);
+        transform.Translate(movement * movementSpeed * Time.deltaTime);
 
-        var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
-        if (!hit)
-        {
-            // TODO: Player fell of the map = dead
-            // Destroy(this.GameObject());
-            return;
-        }
-
-        if (hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
-        {
-            var rigidBody = GetComponent<Rigidbody>();
-            rigidBody.AddForce(new Vector3(0.0f, 1.0f, 0.5f), ForceMode.Impulse);
-            
-            return;
-        }
-
+        // 
+        // Jump
+        //
         if (Input.GetKey(KeyCode.Space) && !_spacePressed)
         {
-            if (!hit) throw new InvalidOperationException();
+            if (!hit) return;
 
             if (hitInfo.collider.GameObject().CompareTag("DirectionChange") &&
                 _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
