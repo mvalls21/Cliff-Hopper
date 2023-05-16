@@ -88,9 +88,16 @@ public class Player : MonoBehaviour
         movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
     }
 
-    public void OnCollisionEnter(Collision _)
+    public void OnCollisionEnter(Collision other)
     {
-        _jumpCounter = 0;
+        if (other.gameObject.name == "RollingStone")
+        {
+            _gameManager.PlayerDied();
+        }
+        else
+        {
+            _jumpCounter = 0;
+        }
     }
 
     public void OnTriggerEnter(Collider other)
@@ -99,7 +106,7 @@ public class Player : MonoBehaviour
         {
             var rigidbody = GetComponent<Rigidbody>();
             rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
-            
+
             _gameManager.PlayerDied();
         }
     }

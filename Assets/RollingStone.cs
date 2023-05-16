@@ -18,12 +18,12 @@ public class RollingStone : MonoBehaviour
     {
         _movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _playerScript = playerGameObject.GetComponent<Player>();
+        speed = _playerScript.speed;
     }
 
     public void Update()
     {
-        float playerSpeed = _playerScript.speed;
-        transform.Translate(_movementDirection * playerSpeed * Time.deltaTime);
+        transform.Translate(_movementDirection * speed * Time.deltaTime);
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit info);
         if (hit && info.collider.CompareTag("DirectionChange") && info.collider.GameObject() != _previousDirectionChange
