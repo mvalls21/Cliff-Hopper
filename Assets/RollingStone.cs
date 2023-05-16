@@ -13,16 +13,21 @@ public class RollingStone : MonoBehaviour
     public float speed = 2.0f;
 
     private GameObject _previousDirectionChange;
+    
+    private Rigidbody _rigidbody;
 
     public void Start()
     {
         _movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _playerScript = playerGameObject.GetComponent<Player>();
         speed = _playerScript.speed;
+
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     public void Update()
     {
+        _rigidbody.useGravity = true;
         transform.Translate(_movementDirection * speed * Time.deltaTime);
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit info);
@@ -31,6 +36,10 @@ public class RollingStone : MonoBehaviour
         {
             ChangeDirection();
             _previousDirectionChange = info.collider.GameObject();
+        }
+        else if (!hit || info.collider.name == "stairs(Clone)")
+        {
+            _rigidbody.useGravity = false;
         }
     }
 

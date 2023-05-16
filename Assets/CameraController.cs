@@ -5,9 +5,11 @@ public class CameraController : MonoBehaviour
 {
     public GameObject player;
 
+    public float correctionStrength = 0.5f;
+
     private Player playerScript;
 
-    private readonly Vector3 _baseTranslation = new Vector3(7.0f, 9.0f, 11.0f);
+    private readonly Vector3 _baseTranslation = new Vector3(6.0f, 9.0f, 11.0f);
 
     private readonly Vector3 _movementDirection = new Vector3(1.0f, 0.0f, 1.0f);
 
@@ -35,7 +37,7 @@ public class CameraController : MonoBehaviour
         var correctionDirection = correction.normalized;
 
         var playerSpeed = playerScript.speed / 2.0f;
-        var movement = _movementDirection * playerSpeed + correctionDirection * 0.5f;
+        var movement = _movementDirection * playerSpeed + correctionDirection * correctionStrength;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;

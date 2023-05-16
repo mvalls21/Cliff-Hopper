@@ -20,7 +20,7 @@ public class FireLauncherController : MonoBehaviour
             fireball.transform.position = transform.position + new Vector3(3.0f, 0.0f, 0.0f);
 
             var rigidbody = fireball.GetComponent<Rigidbody>();
-            rigidbody.velocity = new Vector3(-6.0f, 0.0f, 0.0f);
+            rigidbody.velocity = new Vector3(-4.0f, 0.0f, 0.0f);
 
             Debug.Log("Launched fireball");
         }

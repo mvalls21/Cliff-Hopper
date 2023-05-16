@@ -25,7 +25,9 @@ public class LevelGeneration : MonoBehaviour
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
+
     private PlatformType _previousPlatform;
+    private int _numberSamePlatformPrevious;
 
     public void Start()
     {
@@ -47,6 +49,7 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.parent = transform;
 
         _previousPlatform = PlatformType.Normal;
+        _numberSamePlatformPrevious = 0;
 
         for (uint pathNum = 0; pathNum < 30; ++pathNum)
         {
@@ -56,7 +59,7 @@ public class LevelGeneration : MonoBehaviour
 
             bool stairsInPath = false;
 
-            var numberBlocks = Random.Range(1, 8); // between 1 and 7 blocks
+            var numberBlocks = Random.Range(1, 7); // between 1 and 6 blocks
             for (uint blockNum = 0; blockNum < numberBlocks; ++blockNum)
             {
                 xPos += dx;
@@ -64,29 +67,47 @@ public class LevelGeneration : MonoBehaviour
                 yPos += dy;
 
                 bool canPlaceCoin = pathNum != 0;
-                // TODO: Modify so that two empties in a row are valid
-                bool canPlaceEmpty = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
-                bool canPlaceSpikes = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+
+                bool canPlaceEmpty =
+                    pathNum != 0
+                    && _previousPlatform != PlatformType.DirectionChange
+                    && (_previousPlatform is PlatformType.Normal ||
+                        (_previousPlatform != PlatformType.Empty && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceSpikes =
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal or PlatformType.Slope ||
+                        (_previousPlatform == PlatformType.Spikes && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceSlope =
+                    pathNum != 0
+                    && (_previousPlatform == PlatformType.Normal ||
+                        (_previousPlatform == PlatformType.Slope && _numberSamePlatformPrevious < 3));
+
                 bool canPlaceSlowdown =
-                    pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal or PlatformType.Slope ||
+                        (_previousPlatform == PlatformType.Slowdown && _numberSamePlatformPrevious < 2));
+
+                PlatformType placedPlatform;
 
                 float value = Random.value;
                 if (value <= emptyProb && canPlaceEmpty)
                 {
+                    // Empty
                     dy = 0.0f;
-                    _previousPlatform = PlatformType.Empty;
-                    continue;
+                    placedPlatform = PlatformType.Empty;
                 }
-                else if (value <= emptyProb + spikesProb && value >= emptyProb && canPlaceSpikes)
+                else if (value <= emptyProb + spikesProb && canPlaceSpikes)
                 {
                     // Spikes
                     dy = 0.0f;
                     obj = Instantiate(spikesPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Spikes;
+                    placedPlatform = PlatformType.Spikes;
                 }
-                else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb && pathNum != 0)
+                else if (value <= emptyProb + spikesProb + slopeProb && canPlaceSlope)
                 {
                     // Stairs
                     dy = -0.5f;
@@ -95,18 +116,17 @@ public class LevelGeneration : MonoBehaviour
                     obj.transform.Rotate(new Vector3(0.0f, 90.0f * dx, 0.0f));
 
                     stairsInPath = true;
-                    _previousPlatform = PlatformType.Slope;
+
+                    placedPlatform = PlatformType.Slope;
                 }
-                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb &&
-                         value >= emptyProb + spikesProb + slopeProb && canPlaceSlowdown)
+                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb && canPlaceSlowdown)
                 {
                     // Slowdown
                     dy = 0.0f;
                     obj = Instantiate(slowdownPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Slowdown;
-                    canPlaceCoin = false;
+                    placedPlatform = PlatformType.Slowdown;
                 }
                 else
                 {
@@ -115,14 +135,21 @@ public class LevelGeneration : MonoBehaviour
                     obj = Instantiate(normalPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Normal;
+                    placedPlatform = PlatformType.Normal;
                 }
 
                 obj.transform.parent = transform;
 
+                if (placedPlatform == _previousPlatform)
+                    _numberSamePlatformPrevious++;
+                else
+                    _numberSamePlatformPrevious = 0;
+
+                _previousPlatform = placedPlatform;
+
                 // Coin placement
                 var probabilityCoin = coinProb * Mathf.Log(_platformsSinceCoin - 5);
-                if (Random.value < Mathf.Max(0.0f, probabilityCoin) && canPlaceCoin)
+                if (Random.value <= Mathf.Max(0.0f, probabilityCoin) && canPlaceCoin)
                 {
                     obj = Instantiate(coinPrefab);
                     obj.transform.position = new Vector3(xPos, yPos + 1.5f, zPos);
