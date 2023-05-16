@@ -11,6 +11,8 @@ public class LevelGeneration : MonoBehaviour
     public float spikesProb = 0.2f;
     public float slopeProb = 0.1f;
     public float slowdownProb = 0.1f;
+    public float fireLauncherProb = 0.05f;
+
     public float coinProb = 0.1f;
 
     public GameObject normalPrefab;
@@ -18,6 +20,9 @@ public class LevelGeneration : MonoBehaviour
     public GameObject slopePrefab;
     public GameObject changeDirectionPrefab;
     public GameObject slowdownPrefab;
+    public GameObject fireLauncherPrefab;
+    public GameObject fireballPrefab;
+
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
@@ -134,6 +139,17 @@ public class LevelGeneration : MonoBehaviour
             obj = Instantiate(changeDirectionPrefab);
             obj.transform.position = new Vector3(xPos, yPos, zPos);
             obj.transform.parent = transform;
+
+            // Fire launcher placement
+            if (Random.value <= fireLauncherProb && pathNum % 2 != 0)
+            {
+                obj = Instantiate(fireLauncherPrefab);
+                obj.transform.position = new Vector3(xPos + 0.75f, yPos + 1.0f, zPos);
+                obj.transform.parent = transform;
+
+                var controller = obj.GetComponent<FireLauncherController>();
+                controller.fireballPrefab = fireballPrefab;
+            }
 
             _previousPlatform = PlatformType.DirectionChange;
         }
