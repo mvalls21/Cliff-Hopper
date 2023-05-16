@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
             else if (_jumpCounter < 2)
             {
                 var rigidbody = GetComponent<Rigidbody>();
-                rigidbody.velocity = Vector3.up * 4.0f;
+                rigidbody.velocity = Vector3.up * 4.2f;
                 _jumpCounter++;
             }
         }

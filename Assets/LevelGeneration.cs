@@ -11,6 +11,7 @@ public class LevelGeneration : MonoBehaviour
     public float slopeProb = 0.1f;
     public float slowdownProb = 0.1f;
     public float fireLauncherProb = 0.05f;
+    public float volcanoProb = 0.05f;
 
     public float coinProb = 0.1f;
 
@@ -21,11 +22,13 @@ public class LevelGeneration : MonoBehaviour
     public GameObject slowdownPrefab;
     public GameObject fireLauncherPrefab;
     public GameObject fireballPrefab;
+    public GameObject volcanoPrefab;
 
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
 
+    private GameObject _previousPlatformGameObject;
     private PlatformType _previousPlatform;
     private int _numberSamePlatformPrevious;
 
@@ -71,6 +74,7 @@ public class LevelGeneration : MonoBehaviour
                 bool canPlaceEmpty =
                     pathNum != 0
                     && _previousPlatform != PlatformType.DirectionChange
+                    && _previousPlatform != PlatformType.Volcano
                     && (_previousPlatform is PlatformType.Normal ||
                         (_previousPlatform != PlatformType.Empty && _numberSamePlatformPrevious < 2));
 
@@ -81,13 +85,17 @@ public class LevelGeneration : MonoBehaviour
 
                 bool canPlaceSlope =
                     pathNum != 0
-                    && (_previousPlatform == PlatformType.Normal ||
+                    && (_previousPlatform == PlatformType.Normal || _previousPlatform == PlatformType.Volcano ||
                         (_previousPlatform == PlatformType.Slope && _numberSamePlatformPrevious < 3));
 
                 bool canPlaceSlowdown =
                     pathNum != 0
                     && (_previousPlatform is PlatformType.Normal or PlatformType.Slope ||
                         (_previousPlatform == PlatformType.Slowdown && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceVolcano =
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal);
 
                 PlatformType placedPlatform;
 
@@ -128,6 +136,18 @@ public class LevelGeneration : MonoBehaviour
 
                     placedPlatform = PlatformType.Slowdown;
                 }
+                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb + volcanoProb && canPlaceVolcano)
+                {
+                    // Volcano
+                    dy = 0.0f;
+                    obj = Instantiate(volcanoPrefab);
+                    obj.transform.position = new Vector3(xPos, yPos, zPos);
+
+                    var controller = obj.GetComponent<VolcanoController>();
+                    controller.fireballPrefab = fireballPrefab;
+
+                    placedPlatform = PlatformType.Volcano;
+                }
                 else
                 {
                     // Normal
@@ -139,6 +159,7 @@ public class LevelGeneration : MonoBehaviour
                 }
 
                 obj.transform.parent = transform;
+                _previousPlatformGameObject = obj;
 
                 if (placedPlatform == _previousPlatform)
                     _numberSamePlatformPrevious++;
@@ -195,6 +216,7 @@ public class LevelGeneration : MonoBehaviour
         Spikes,
         Slope,
         Slowdown,
+        Volcano,
         DirectionChange,
         Normal
     }
