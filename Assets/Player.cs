@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Vector3 movementDirection;
+    public Vector3 movementDirection { get; private set; }
 
     public float speed = 2.0f;
 
@@ -94,5 +94,15 @@ public class Player : MonoBehaviour
     public void OnCollisionEnter(Collision _)
     {
         _jumpCounter = 0;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fireball"))
+        {
+            var rigidbody = GetComponent<Rigidbody>();
+            rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
+            _jumpCounter++;
+        }
     }
 }

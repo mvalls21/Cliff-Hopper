@@ -55,13 +55,16 @@ public class LevelGeneration : MonoBehaviour
             float dz = 1 - pathNum % 2;
             float dy = 0.0f;
 
-            for (uint blockNum = 0; blockNum < Random.Range(1, 8); ++blockNum) // between 1 and 7 blocks
+            bool stairsInPath = false;
+
+            var numberBlocks = Random.Range(1, 8); // between 1 and 7 blocks
+            for (uint blockNum = 0; blockNum < numberBlocks; ++blockNum)
             {
                 xPos += dx;
                 zPos += dz;
                 yPos += dy;
 
-                bool canPlaceCoin = true;
+                bool canPlaceCoin = pathNum != 0;
                 // TODO: Modify so that two empties in a row are valid
                 bool canPlaceEmpty = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
                 bool canPlaceSpikes = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
@@ -77,25 +80,28 @@ public class LevelGeneration : MonoBehaviour
                 }
                 else if (value <= emptyProb + spikesProb && value >= emptyProb && canPlaceSpikes)
                 {
+                    // Spikes
                     dy = 0.0f;
                     obj = Instantiate(spikesPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
                     _previousPlatform = PlatformType.Spikes;
-                    canPlaceCoin = false;
                 }
                 else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb && pathNum != 0)
                 {
+                    // Stairs
                     dy = -0.5f;
                     obj = Instantiate(slopePrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
                     obj.transform.Rotate(new Vector3(0.0f, 90.0f * dx, 0.0f));
 
-                    _previousPlatform = PlatformType.Empty;
+                    stairsInPath = true;
+                    _previousPlatform = PlatformType.Slope;
                 }
                 else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb &&
                          value >= emptyProb + spikesProb + slopeProb && canPlaceSlowdown)
                 {
+                    // Slowdown
                     dy = 0.0f;
                     obj = Instantiate(slowdownPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
@@ -105,6 +111,7 @@ public class LevelGeneration : MonoBehaviour
                 }
                 else
                 {
+                    // Normal
                     dy = 0.0f;
                     obj = Instantiate(normalPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
@@ -141,7 +148,8 @@ public class LevelGeneration : MonoBehaviour
             obj.transform.parent = transform;
 
             // Fire launcher placement
-            if (Random.value <= fireLauncherProb && pathNum % 2 != 0)
+            bool canPlaceFireLauncher = pathNum % 2 != 0 && !stairsInPath && numberBlocks >= 2;
+            if (Random.value <= fireLauncherProb && canPlaceFireLauncher)
             {
                 obj = Instantiate(fireLauncherPrefab);
                 obj.transform.position = new Vector3(xPos + 0.75f, yPos + 1.0f, zPos);

@@ -156,7 +156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a50daf002da25e25bbe47eefb735a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementDirection: {x: 0, y: 0, z: 0}
   speed: 2
   GameManagerObject: {fileID: 1387127665}
 --- !u!65 &225901888
@@ -479,7 +478,7 @@ MonoBehaviour:
   spikesProb: 0.1
   slopeProb: 0.15
   slowdownProb: 0.1
-  fireLauncherProb: 0.4
+  fireLauncherProb: 0.05
   coinProb: 0.1
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
   spikesPrefab: {fileID: 8175825739093076404, guid: 861ba5ca0c75f9352a5efcabecddbfb3, type: 3}
