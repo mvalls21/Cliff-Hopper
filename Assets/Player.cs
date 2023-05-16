@@ -102,7 +102,8 @@ public class Player : MonoBehaviour
         {
             var rigidbody = GetComponent<Rigidbody>();
             rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
-            _jumpCounter++;
+            
+            _gameManager.PlayerDied();
         }
     }
 }

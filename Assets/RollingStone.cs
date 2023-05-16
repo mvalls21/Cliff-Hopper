@@ -7,6 +7,10 @@ public class RollingStone : MonoBehaviour
 {
     private Vector3 _movementDirection;
 
+    public GameObject playerGameObject;
+
+    private Player _playerScript;
+
     public float speed = 2.0f;
 
     private GameObject _previousDirectionChange;
@@ -14,11 +18,13 @@ public class RollingStone : MonoBehaviour
     public void Start()
     {
         _movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
+        _playerScript = playerGameObject.GetComponent<Player>();
     }
 
     public void Update()
     {
-        transform.Translate(_movementDirection * speed * Time.deltaTime);
+        float playerSpeed = _playerScript.speed;
+        transform.Translate(_movementDirection * playerSpeed * Time.deltaTime);
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit info);
         if (hit && info.collider.CompareTag("DirectionChange") && info.collider.GameObject() != _previousDirectionChange
@@ -31,13 +37,11 @@ public class RollingStone : MonoBehaviour
 
     private bool IsAtCenter(GameObject obj)
     {
-        var position = transform.position - new Vector3(0.0f, 1.0f, 0.0f);
+        var position = transform.position - Vector3.up;
         var platformPosition = obj.transform.position;
 
-        // Debug.Log($"{position} {platformPosition}");
-
-        return Math.Abs(position.x - platformPosition.x) < 0.1 && Math.Abs(position.y - platformPosition.y) < 0.1
-                                                                && Math.Abs(position.z - platformPosition.z) < 0.1;
+        const float epsilon = 0.05f;
+        return position.x - platformPosition.x >= epsilon || position.z - platformPosition.z >= epsilon;
     }
 
     private void ChangeDirection()
