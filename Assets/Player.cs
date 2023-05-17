@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class Player : MonoBehaviour
 
     private GameObject _previousDirectionChangeObject;
 
-    public GameObject GameManagerObject;
+    public GameObject gameManagerObject;
 
     private GameManager _gameManager;
 
@@ -20,7 +21,7 @@ public class Player : MonoBehaviour
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
-        _gameManager = GameManagerObject.GetComponent<GameManager>();
+        _gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
     public void Update()
@@ -86,6 +87,7 @@ public class Player : MonoBehaviour
     private void ChangeDirection()
     {
         movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
+        _gameManager.IncreaseScore();
     }
 
     public void OnCollisionEnter(Collision other)

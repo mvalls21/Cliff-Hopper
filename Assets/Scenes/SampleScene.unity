@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2.5
-  GameManagerObject: {fileID: 1387127665}
+  gameManagerObject: {fileID: 1387127665}
 --- !u!23 &225901889
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -401,7 +401,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 6.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -478,7 +478,7 @@ MonoBehaviour:
   GameManagerObject: {fileID: 1387127665}
   emptyProb: 0.12
   spikesProb: 0.1
-  slopeProb: 0.15
+  slopeProb: 0.2
   slowdownProb: 0.1
   fireLauncherProb: 0.08
   volcanoProb: 0.11
@@ -492,6 +492,8 @@ MonoBehaviour:
   fireballPrefab: {fileID: 3861773860401276706, guid: 0d5f8bb2fa30821309cc7be7374aea96, type: 3}
   volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
+  infiniteGeneration: 0
+  minimumPathsInstantiated: 8
 --- !u!4 &1110724294
 Transform:
   m_ObjectHideFlags: 0
