@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,6 +10,9 @@ public class LevelGeneration : MonoBehaviour
     public float spikesProb = 0.2f;
     public float slopeProb = 0.1f;
     public float slowdownProb = 0.1f;
+    public float fireLauncherProb = 0.05f;
+    public float volcanoProb = 0.05f;
+
     public float coinProb = 0.1f;
 
     public GameObject normalPrefab;
@@ -18,10 +20,17 @@ public class LevelGeneration : MonoBehaviour
     public GameObject slopePrefab;
     public GameObject changeDirectionPrefab;
     public GameObject slowdownPrefab;
+    public GameObject fireLauncherPrefab;
+    public GameObject fireballPrefab;
+    public GameObject volcanoPrefab;
+
     public GameObject coinPrefab;
 
     private int _platformsSinceCoin = 0;
+
+    private GameObject _previousPlatformGameObject;
     private PlatformType _previousPlatform;
+    private int _numberSamePlatformPrevious;
 
     public void Start()
     {
@@ -43,6 +52,7 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.parent = transform;
 
         _previousPlatform = PlatformType.Normal;
+        _numberSamePlatformPrevious = 0;
 
         for (uint pathNum = 0; pathNum < 30; ++pathNum)
         {
@@ -50,71 +60,120 @@ public class LevelGeneration : MonoBehaviour
             float dz = 1 - pathNum % 2;
             float dy = 0.0f;
 
-            for (uint blockNum = 0; blockNum < Random.Range(1, 8); ++blockNum) // between 1 and 7 blocks
+            bool stairsInPath = false;
+
+            var numberBlocks = Random.Range(1, 7); // between 1 and 6 blocks
+            for (uint blockNum = 0; blockNum < numberBlocks; ++blockNum)
             {
                 xPos += dx;
                 zPos += dz;
                 yPos += dy;
 
-                bool canPlaceCoin = true;
-                // TODO: Modify so that two empties in a row are valid
-                bool canPlaceEmpty = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
-                bool canPlaceSpikes = pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+                bool canPlaceCoin = pathNum != 0;
+
+                bool canPlaceEmpty =
+                    pathNum != 0
+                    && _previousPlatform != PlatformType.DirectionChange
+                    && _previousPlatform != PlatformType.Volcano
+                    && (_previousPlatform is PlatformType.Normal ||
+                        (_previousPlatform != PlatformType.Empty && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceSpikes =
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal or PlatformType.Slope ||
+                        (_previousPlatform == PlatformType.Spikes && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceSlope =
+                    pathNum != 0
+                    && (_previousPlatform == PlatformType.Normal || _previousPlatform == PlatformType.Volcano ||
+                        (_previousPlatform == PlatformType.Slope && _numberSamePlatformPrevious < 3));
+
                 bool canPlaceSlowdown =
-                    pathNum != 0 && (_previousPlatform is PlatformType.Normal or PlatformType.Slope);
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal or PlatformType.Slope ||
+                        (_previousPlatform == PlatformType.Slowdown && _numberSamePlatformPrevious < 2));
+
+                bool canPlaceVolcano =
+                    pathNum != 0
+                    && (_previousPlatform is PlatformType.Normal);
+
+                PlatformType placedPlatform;
 
                 float value = Random.value;
                 if (value <= emptyProb && canPlaceEmpty)
                 {
+                    // Empty
                     dy = 0.0f;
-                    _previousPlatform = PlatformType.Empty;
-                    continue;
+                    placedPlatform = PlatformType.Empty;
                 }
-                else if (value <= emptyProb + spikesProb && value >= emptyProb && canPlaceSpikes)
+                else if (value <= emptyProb + spikesProb && canPlaceSpikes)
                 {
+                    // Spikes
                     dy = 0.0f;
                     obj = Instantiate(spikesPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Spikes;
-                    canPlaceCoin = false;
+                    placedPlatform = PlatformType.Spikes;
                 }
-                else if (value <= emptyProb + spikesProb + slopeProb && value >= emptyProb + spikesProb && pathNum != 0)
+                else if (value <= emptyProb + spikesProb + slopeProb && canPlaceSlope)
                 {
+                    // Stairs
                     dy = -0.5f;
                     obj = Instantiate(slopePrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
                     obj.transform.Rotate(new Vector3(0.0f, 90.0f * dx, 0.0f));
 
-                    _previousPlatform = PlatformType.Empty;
+                    stairsInPath = true;
+
+                    placedPlatform = PlatformType.Slope;
                 }
-                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb &&
-                         value >= emptyProb + spikesProb + slopeProb && canPlaceSlowdown)
+                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb && canPlaceSlowdown)
                 {
+                    // Slowdown
                     dy = 0.0f;
                     obj = Instantiate(slowdownPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Slowdown;
-                    canPlaceCoin = false;
+                    placedPlatform = PlatformType.Slowdown;
+                }
+                else if (value <= emptyProb + spikesProb + slopeProb + slowdownProb + volcanoProb && canPlaceVolcano)
+                {
+                    // Volcano
+                    dy = 0.0f;
+                    obj = Instantiate(volcanoPrefab);
+                    obj.transform.position = new Vector3(xPos, yPos, zPos);
+
+                    var controller = obj.GetComponent<VolcanoController>();
+                    controller.fireballPrefab = fireballPrefab;
+
+                    placedPlatform = PlatformType.Volcano;
                 }
                 else
                 {
+                    // Normal
                     dy = 0.0f;
                     obj = Instantiate(normalPrefab);
                     obj.transform.position = new Vector3(xPos, yPos, zPos);
 
-                    _previousPlatform = PlatformType.Normal;
+                    placedPlatform = PlatformType.Normal;
                 }
 
                 obj.transform.parent = transform;
+                _previousPlatformGameObject = obj;
+
+                if (placedPlatform == _previousPlatform)
+                    _numberSamePlatformPrevious++;
+                else
+                    _numberSamePlatformPrevious = 0;
+
+                _previousPlatform = placedPlatform;
 
                 // Coin placement
                 var probabilityCoin = coinProb * Mathf.Log(_platformsSinceCoin - 5);
-                if (Random.value < Mathf.Max(0.0f, probabilityCoin) && canPlaceCoin)
+                if (Random.value <= Mathf.Max(0.0f, probabilityCoin) && canPlaceCoin)
                 {
                     obj = Instantiate(coinPrefab);
-                    obj.transform.position = new Vector3(xPos, yPos + 1, zPos);
+                    obj.transform.position = new Vector3(xPos, yPos + 1.5f, zPos);
 
                     var coinController = obj.GetComponent<CoinController>();
                     coinController.GameManager = _gameManager;
@@ -135,6 +194,18 @@ public class LevelGeneration : MonoBehaviour
             obj.transform.position = new Vector3(xPos, yPos, zPos);
             obj.transform.parent = transform;
 
+            // Fire launcher placement
+            bool canPlaceFireLauncher = pathNum % 2 != 0 && !stairsInPath && numberBlocks >= 2;
+            if (Random.value <= fireLauncherProb && canPlaceFireLauncher)
+            {
+                obj = Instantiate(fireLauncherPrefab);
+                obj.transform.position = new Vector3(xPos + 0.75f, yPos + 1.0f, zPos);
+                obj.transform.parent = transform;
+
+                var controller = obj.GetComponent<FireLauncherController>();
+                controller.fireballPrefab = fireballPrefab;
+            }
+
             _previousPlatform = PlatformType.DirectionChange;
         }
     }
@@ -145,6 +216,7 @@ public class LevelGeneration : MonoBehaviour
         Spikes,
         Slope,
         Slowdown,
+        Volcano,
         DirectionChange,
         Normal
     }

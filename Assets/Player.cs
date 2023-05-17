@@ -1,11 +1,9 @@
-using System;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Vector3 movementDirection;
+    public Vector3 movementDirection { get; private set; }
 
     public float speed = 2.0f;
 
@@ -77,8 +75,7 @@ public class Player : MonoBehaviour
             else if (_jumpCounter < 2)
             {
                 var rigidbody = GetComponent<Rigidbody>();
-                // rigidbody.AddForce(new Vector3(0.0f, 4.0f, 0.0f), ForceMode.Impulse);
-                rigidbody.velocity = Vector3.up * 4.0f;
+                rigidbody.velocity = Vector3.up * 4.2f;
                 _jumpCounter++;
             }
         }
@@ -91,8 +88,26 @@ public class Player : MonoBehaviour
         movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
     }
 
-    public void OnCollisionEnter(Collision _)
+    public void OnCollisionEnter(Collision other)
     {
-        _jumpCounter = 0;
+        if (other.gameObject.name == "RollingStone")
+        {
+            _gameManager.PlayerDied();
+        }
+        else
+        {
+            _jumpCounter = 0;
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fireball"))
+        {
+            var rigidbody = GetComponent<Rigidbody>();
+            rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
+
+            _gameManager.PlayerDied();
+        }
     }
 }

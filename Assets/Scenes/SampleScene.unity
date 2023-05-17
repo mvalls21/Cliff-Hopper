@@ -134,9 +134,9 @@ GameObject:
   - component: {fileID: 225901891}
   - component: {fileID: 225901890}
   - component: {fileID: 225901889}
-  - component: {fileID: 225901888}
   - component: {fileID: 225901887}
   - component: {fileID: 225901892}
+  - component: {fileID: 225901893}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -156,22 +156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a50daf002da25e25bbe47eefb735a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementDirection: {x: 0, y: 0, z: 0}
-  speed: 2
+  speed: 2.5
   GameManagerObject: {fileID: 1387127665}
---- !u!65 &225901888
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225901886}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &225901889
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -231,7 +217,7 @@ Transform:
   m_GameObject: {fileID: 225901886}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 0.75, y: 1, z: 0.75}
+  m_LocalScale: {x: 0.65, y: 1, z: 0.65}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -245,7 +231,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 225901886}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -253,6 +239,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!136 &225901893
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225901886}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.0094798
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.0047398806, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,7 +401,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -425,7 +425,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.08852133, y: -0.9076734, z: 0.33036605, w: 0.2432104}
-  m_LocalPosition: {x: 5.5, y: 9, z: 11}
+  m_LocalPosition: {x: 6, y: 9, z: 11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -445,6 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 225901886}
+  correctionStrength: 0.5
 --- !u!1 &1110724292
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,16 +476,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameManagerObject: {fileID: 1387127665}
-  emptyProb: 0.1
+  emptyProb: 0.12
   spikesProb: 0.1
   slopeProb: 0.15
   slowdownProb: 0.1
+  fireLauncherProb: 0.08
+  volcanoProb: 0.11
   coinProb: 0.1
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
   spikesPrefab: {fileID: 8175825739093076404, guid: 861ba5ca0c75f9352a5efcabecddbfb3, type: 3}
   slopePrefab: {fileID: 773842026195072642, guid: e72fa46a8dc100cecb528007ec5605ab, type: 3}
   changeDirectionPrefab: {fileID: 4036006085463490100, guid: b66f7b8829e5ae5d6b759f17a609378d, type: 3}
   slowdownPrefab: {fileID: 4679345841291289286, guid: c8a2cf7f8abd278db85d5bca87cadc8f, type: 3}
+  fireLauncherPrefab: {fileID: 3450150109343074723, guid: 33f0b35a03e2ec07db8004e21ba7450a, type: 3}
+  fireballPrefab: {fileID: 3861773860401276706, guid: 0d5f8bb2fa30821309cc7be7374aea96, type: 3}
+  volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
 --- !u!4 &1110724294
 Transform:
@@ -578,6 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a7c09c7c8fa5882bb87ec3dcf6138e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerGameObject: {fileID: 225901886}
   speed: 2
 --- !u!65 &1829841364
 BoxCollider:

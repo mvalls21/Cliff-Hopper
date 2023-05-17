@@ -5,9 +5,11 @@ public class CameraController : MonoBehaviour
 {
     public GameObject player;
 
-    private Player playerScript;
+    public float correctionStrength = 0.5f;
 
-    private readonly Vector3 _baseTranslation = new Vector3(7.0f, 9.0f, 11.0f);
+    private Player _playerScript;
+
+    private readonly Vector3 _baseTranslation = new Vector3(6.0f, 9.0f, 11.0f);
 
     private readonly Vector3 _movementDirection = new Vector3(1.0f, 0.0f, 1.0f);
 
@@ -18,7 +20,7 @@ public class CameraController : MonoBehaviour
     public void Start()
     {
         _previousPlayerMovementDirection = Vector3.zero;
-        playerScript = player.GetComponent<Player>();
+        _playerScript = player.GetComponent<Player>();
     }
 
     public void Update()
@@ -34,8 +36,8 @@ public class CameraController : MonoBehaviour
 
         var correctionDirection = correction.normalized;
 
-        var playerSpeed = playerScript.speed / 2.0f;
-        var movement = _movementDirection * playerSpeed + correctionDirection * 0.5f;
+        var playerSpeed = _playerScript.speed / 2.0f;
+        var movement = _movementDirection * playerSpeed + correctionDirection * correctionStrength;
 
         var currentRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
@@ -46,7 +48,7 @@ public class CameraController : MonoBehaviour
 
     private Vector3 FindMiddlePlatformRaycast()
     {
-        var playerDirection = playerScript.movementDirection;
+        var playerDirection = _playerScript.movementDirection;
 
         if (playerDirection == _previousPlayerMovementDirection)
             return _middlePositionCache;
