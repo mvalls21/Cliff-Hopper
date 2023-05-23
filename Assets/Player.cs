@@ -79,6 +79,19 @@ public class Player : MonoBehaviour
             }
         }
 
+        // 
+        // Check fell off map 
+        // 
+        if (_previousDirectionChangeObject == null && transform.position.y < -2.0f)
+        {
+            _gameManager.PlayerDied();
+        }
+        else if (_previousDirectionChangeObject != null &&
+                 _previousDirectionChangeObject.transform.position.y - transform.position.y > 4.0f)
+        {
+            _gameManager.PlayerDied();
+        }
+
         _spacePressed = Input.GetKey(KeyCode.Space);
     }
 

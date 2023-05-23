@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-     public Canvas playerDeadScreen;
+    public Canvas playerDeadScreen;
 
     public bool IsPlayerAlive { get; private set; } = true;
 
@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public void PlayerDied()
     {
         IsPlayerAlive = false;
-        
+
         var screen = playerDeadScreen.GetComponent<DeadScreenController>();
         screen.Show(Score);
     }
@@ -40,5 +40,4 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/Game");
     }
-    
 }
