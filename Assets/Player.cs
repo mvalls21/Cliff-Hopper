@@ -64,9 +64,7 @@ public class Player : MonoBehaviour
         //
         if (Input.GetKey(KeyCode.Space) && !_spacePressed)
         {
-            if (!hit) return;
-
-            if (hitInfo.collider.GameObject().CompareTag("DirectionChange") &&
+            if (hit && hitInfo.collider.GameObject().CompareTag("DirectionChange") &&
                 _previousDirectionChangeObject != hitInfo.collider.GameObject() &&
                 _jumpCounter == 0)
             {
