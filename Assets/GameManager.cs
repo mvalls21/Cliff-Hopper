@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDied()
     {
+        if (!IsPlayerAlive) 
+            return;
+        
         IsPlayerAlive = false;
 
         Destroy(currentScoreText);
