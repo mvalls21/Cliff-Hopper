@@ -475,7 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cecdb27a2f4342478a6f4658d393240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameManagerObject: {fileID: 1387127665}
+  gameManagerObject: {fileID: 1387127665}
   emptyProb: 0.12
   spikesProb: 0.1
   slopeProb: 0.2
@@ -492,7 +492,6 @@ MonoBehaviour:
   fireballPrefab: {fileID: 3861773860401276706, guid: 0d5f8bb2fa30821309cc7be7374aea96, type: 3}
   volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
-  infiniteGeneration: 0
   minimumPathsInstantiated: 8
 --- !u!4 &1110724294
 Transform:
