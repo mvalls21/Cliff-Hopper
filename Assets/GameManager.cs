@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+     public Canvas playerDeadScreen;
+
     public bool IsPlayerAlive { get; private set; } = true;
 
     public int NumberCoins { get; private set; } = 0;
@@ -14,6 +16,9 @@ public class GameManager : MonoBehaviour
     public void PlayerDied()
     {
         IsPlayerAlive = false;
+        
+        var screen = playerDeadScreen.GetComponent<DeadScreenController>();
+        screen.Show(Score);
     }
 
     public void IncreaseCoin()
@@ -26,7 +31,7 @@ public class GameManager : MonoBehaviour
     {
         Score++;
         Debug.Log($"Score: {Score}");
-        
+
         ScoreChanged?.Invoke(this, Score);
     }
 }
