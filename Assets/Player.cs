@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _gameManager = gameManagerObject.GetComponent<GameManager>();
+        transform.position = new Vector3(0.0f, 1.0f, 0.0f);
     }
 
     public void Update()
@@ -34,7 +35,7 @@ public class Player : MonoBehaviour
         //
         // Spike collision
         //
-        if (hit && hitInfo.collider.GameObject().CompareTag("Spike") && _jumpCounter == 0)
+        if (hit && hitInfo.collider.CompareTag("Spike") && _jumpCounter == 0)
         {
             var rigidBody = GetComponent<Rigidbody>();
             rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
@@ -77,6 +78,19 @@ public class Player : MonoBehaviour
                 rigidbody.velocity = Vector3.up * 4.2f;
                 _jumpCounter++;
             }
+        }
+
+        // 
+        // Check fell off map 
+        // 
+        if (_previousDirectionChangeObject == null && transform.position.y < -2.0f)
+        {
+            _gameManager.PlayerDied();
+        }
+        else if (_previousDirectionChangeObject != null &&
+                 _previousDirectionChangeObject.transform.position.y - transform.position.y > 4.0f)
+        {
+            _gameManager.PlayerDied();
         }
 
         _spacePressed = Input.GetKey(KeyCode.Space);

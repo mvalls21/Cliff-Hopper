@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class LevelGeneration : MonoBehaviour
 {
-    public GameObject GameManagerObject;
+    public GameObject gameManagerObject;
     private GameManager _gameManager;
 
     #region Probabilities
@@ -42,7 +40,7 @@ public class LevelGeneration : MonoBehaviour
     private PlatformType _previousPlatform;
     private int _numberSamePlatformPrevious;
 
-    public bool infiniteGeneration = true;
+    public static bool InfiniteGeneration = true;
     public int minimumPathsInstantiated = 5;
     private readonly Queue<Path> _placedPaths = new Queue<Path>();
 
@@ -51,8 +49,8 @@ public class LevelGeneration : MonoBehaviour
 
     public void Start()
     {
-        _gameManager = GameManagerObject.GetComponent<GameManager>();
-        if (infiniteGeneration)
+        _gameManager = gameManagerObject.GetComponent<GameManager>();
+        if (InfiniteGeneration)
             _gameManager.ScoreChanged += OnScoreChanged;
 
         GameObject obj;
@@ -72,12 +70,12 @@ public class LevelGeneration : MonoBehaviour
         _previousPlatform = PlatformType.Normal;
         _numberSamePlatformPrevious = 0;
 
-        var numberPaths = infiniteGeneration ? minimumPathsInstantiated : 30;
+        var numberPaths = InfiniteGeneration ? minimumPathsInstantiated : 30;
         for (var pathNum = 0; pathNum < numberPaths; ++pathNum)
         {
             var path = GeneratePath(pathNum);
 
-            if (infiniteGeneration)
+            if (InfiniteGeneration)
                 _placedPaths.Enqueue(path);
         }
 
@@ -201,7 +199,7 @@ public class LevelGeneration : MonoBehaviour
 
             _previousPlatform = placedPlatform;
 
-            if (infiniteGeneration && placedPlatform != PlatformType.Empty)
+            if (InfiniteGeneration && placedPlatform != PlatformType.Empty)
                 path.platforms.Add(obj);
 
             // Coin placement
