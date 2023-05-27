@@ -17,7 +17,7 @@ public class FireLauncherController : MonoBehaviour
 
             // Launch fireball
             var fireball = Instantiate(fireballPrefab);
-            fireball.transform.position = transform.position + new Vector3(3.0f, 0.0f, 0.0f);
+            fireball.transform.position = transform.position + new Vector3(2.0f, 0.0f, 0.0f);
 
             var rigidbody = fireball.GetComponent<Rigidbody>();
             rigidbody.velocity = new Vector3(-4.0f, 0.0f, 0.0f);

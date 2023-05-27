@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
 
     private Player _playerScript;
 
-    private readonly Vector3 _baseTranslation = new Vector3(6.0f, 9.0f, 11.0f);
+    private readonly Vector3 _baseTranslation = new Vector3(6.5f, 9.0f, 11.0f);
 
     private readonly Vector3 _movementDirection = new Vector3(1.0f, 0.0f, 1.0f);
 
