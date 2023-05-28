@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class VolcanoController : MonoBehaviour
@@ -9,6 +11,8 @@ public class VolcanoController : MonoBehaviour
     private const int NumberFireballs = 4;
 
     private const float LookBack = 1.4f;
+
+    private readonly List<GameObject> _fireballs = new List<GameObject>();
 
     public void Update()
     {
@@ -33,9 +37,19 @@ public class VolcanoController : MonoBehaviour
                 var rigidbody = fireball.GetComponent<Rigidbody>();
                 rigidbody.useGravity = true;
                 rigidbody.AddForce(Vector3.up * 7.0f, ForceMode.Impulse);
+
+                _fireballs.Add(fireball);
             }
 
             _fireballsLaunched = true;
+        }
+
+        if (_fireballsLaunched &&
+            _fireballs.Any(fireball => fireball.transform.position.y < transform.position.y - 1.0f))
+        {
+            foreach (var fireball in _fireballs)
+                Destroy(fireball);
+            _fireballs.Clear();
         }
     }
 }
