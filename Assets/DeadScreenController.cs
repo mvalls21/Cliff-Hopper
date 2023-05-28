@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,10 @@ public class DeadScreenController : MonoBehaviour
     {
         gameObject.SetActive(true);
         scoreText.text = $"Score: {score}";
+        
+        var menuMusicSource  = GetComponent<AudioSource>();
+        menuMusicSource.Play();
+        
     }
 
     public void MainMenu()

@@ -42,10 +42,14 @@ public class GameManager : MonoBehaviour
 
     public event EventHandler<int> ScoreChanged;
 
+    private AudioSource _gameMusicSource;
+
     public void Start()
     {
         Score = 0;
         NumberCoins = 0; // TODO: Should read from memory?
+
+        _gameMusicSource = GetComponent<AudioSource>();
     }
 
     public void PlayerDied()
@@ -58,6 +62,8 @@ public class GameManager : MonoBehaviour
         Destroy(currentScoreText);
         Destroy(currentCoinsText);
         Destroy(coinIcon);
+        
+        _gameMusicSource.Stop();
         
         var screen = playerDeadScreen.GetComponent<DeadScreenController>();
         screen.Show(Score);
