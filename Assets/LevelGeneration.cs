@@ -230,12 +230,14 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.position = new Vector3(xPos, yPos, zPos);
         obj.transform.parent = transform;
 
+        // TODO: Temporal
         for (int i = 1; i < 5; ++i)
         {
             obj = Instantiate(normalPrefab);
             obj.transform.position = new Vector3(xPos, yPos - i, zPos);
             obj.transform.parent = transform;
         }
+        // ==============
 
         path.platforms.Add(obj);
 

@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
 
     public Text coinIcon;
 
-    public bool IsPlayerAlive { get; private set; } = true;
-
+    public static bool IsPlayerAlive = true;
+    
     private int _numberCoins;
 
     public int NumberCoins
@@ -24,7 +24,9 @@ public class GameManager : MonoBehaviour
         private set
         {
             _numberCoins = value;
-            currentCoinsText.text = $"{value}";
+            
+            if (currentCoinsText != null)
+                currentCoinsText.text = $"{value}";
         }
     } 
 
@@ -36,7 +38,9 @@ public class GameManager : MonoBehaviour
         private set
         {
             _score = value;
-            currentScoreText.text = $"{value}";
+            
+            if (currentScoreText != null)
+                currentScoreText.text = $"{value}";
         }
     }
 
@@ -50,6 +54,7 @@ public class GameManager : MonoBehaviour
         NumberCoins = 0; // TODO: Should read from memory?
 
         _gameMusicSource = GetComponent<AudioSource>();
+        IsPlayerAlive = true;
     }
 
     public void PlayerDied()
@@ -62,6 +67,9 @@ public class GameManager : MonoBehaviour
         Destroy(currentScoreText);
         Destroy(currentCoinsText);
         Destroy(coinIcon);
+
+        currentCoinsText = null;
+        currentCoinsText = null;
         
         _gameMusicSource.Stop();
         

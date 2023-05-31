@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
 
     public void Update()
     {
-        if (!_gameManager.IsPlayerAlive)
+        if (!GameManager.IsPlayerAlive)
             return;
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
@@ -39,6 +39,9 @@ public class Player : MonoBehaviour
         {
             var rigidBody = GetComponent<Rigidbody>();
             rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
+
+            var spikesController = hitInfo.collider.GetComponent<SpikesController>();
+            spikesController.CollisionPlayer();
 
             _gameManager.PlayerDied();
             return;
