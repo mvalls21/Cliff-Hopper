@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         Score = 0;
-        NumberCoins = 0; // TODO: Should read from memory?
+        NumberCoins = PlayerPrefs.GetInt("NumberCoins");
+        MaxScore = PlayerPrefs.GetInt("MaxScore");
 
         _gameMusicSource = GetComponent<AudioSource>();
         IsPlayerAlive = true;
@@ -78,7 +79,11 @@ public class GameManager : MonoBehaviour
         if (Score > MaxScore)
         {
             MaxScore = Score;
+            PlayerPrefs.SetInt("MaxScore", MaxScore);
         }
+        
+        PlayerPrefs.SetInt("NumberCoins", NumberCoins);
+        PlayerPrefs.Save();
         
         var screen = playerDeadScreen.GetComponent<DeadScreenController>();
         screen.Show(Score, MaxScore);
