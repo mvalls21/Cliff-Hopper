@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
@@ -14,6 +15,14 @@ public class Player : MonoBehaviour
 
     private GameManager _gameManager;
 
+    public AudioClip deadAudioClip;
+
+    public AudioClip jumpAudioClip;
+
+    private AudioSource _audioSource;
+
+    public GameObject bloodParticle;
+
     private int _jumpCounter = 0;
 
     private bool _spacePressed = false;
@@ -23,6 +32,7 @@ public class Player : MonoBehaviour
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _gameManager = gameManagerObject.GetComponent<GameManager>();
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+        _audioSource = GetComponent<AudioSource>();
     }
 
     public void Update()
@@ -43,7 +53,7 @@ public class Player : MonoBehaviour
             var spikesController = hitInfo.collider.GetComponent<SpikesController>();
             spikesController.CollisionPlayer();
 
-            _gameManager.PlayerDied();
+            PlayerDied();
             return;
         }
 
@@ -88,12 +98,12 @@ public class Player : MonoBehaviour
         // 
         if (_previousDirectionChangeObject == null && transform.position.y < -2.0f)
         {
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
         else if (_previousDirectionChangeObject != null &&
                  _previousDirectionChangeObject.transform.position.y - transform.position.y > 4.0f)
         {
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
 
         _spacePressed = Input.GetKey(KeyCode.Space);
@@ -105,11 +115,36 @@ public class Player : MonoBehaviour
         _gameManager.IncreaseScore();
     }
 
+    private void PlayerDied()
+    {
+        if (!GameManager.IsPlayerAlive) return;
+
+        var mesh = GetComponent<MeshRenderer>();
+        Destroy(mesh);
+
+        for (int i = 0; i < 8; ++i)
+        {
+            var blood = Instantiate(bloodParticle);
+            blood.transform.position = transform.position;
+
+            var rigidBody = blood.GetComponent<Rigidbody>();
+
+            var horizontalStrength = 1.0f;
+            var direction = i % 2 == 0 ? 1 : -1;
+            var force = new Vector3(horizontalStrength * movementDirection.z * direction, 1.0f,
+                horizontalStrength * movementDirection.x * direction);
+            rigidBody.AddForce(force, ForceMode.Impulse);
+        }
+
+        _audioSource.PlayOneShot(deadAudioClip);
+        _gameManager.PlayerDied();
+    }
+
     public void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.name == "RollingStone")
         {
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
         else
         {
@@ -124,7 +159,7 @@ public class Player : MonoBehaviour
             var rigidbody = GetComponent<Rigidbody>();
             rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
 
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
     }
 }
