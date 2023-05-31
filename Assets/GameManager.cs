@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    static public int MaxScore = 0;
+
     public event EventHandler<int> ScoreChanged;
 
     private AudioSource _gameMusicSource;
@@ -72,9 +74,14 @@ public class GameManager : MonoBehaviour
         currentCoinsText = null;
         
         _gameMusicSource.Stop();
+
+        if (Score > MaxScore)
+        {
+            MaxScore = Score;
+        }
         
         var screen = playerDeadScreen.GetComponent<DeadScreenController>();
-        screen.Show(Score);
+        screen.Show(Score, MaxScore);
     }
 
     public void IncreaseCoin()
