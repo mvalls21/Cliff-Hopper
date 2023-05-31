@@ -231,7 +231,7 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.parent = transform;
 
         // TODO: Temporal
-        for (int i = 1; i < 5; ++i)
+        for (int i = 1; i < 10; ++i)
         {
             obj = Instantiate(normalPrefab);
             obj.transform.position = new Vector3(xPos, yPos - i, zPos);
