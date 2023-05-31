@@ -33,6 +33,13 @@ public class VolcanoController : MonoBehaviour
 
                 var fireball = Instantiate(fireballPrefab);
                 fireball.transform.position = transform.position + offset;
+               
+                if (i != 0)
+                {
+                    var audioSource = fireball.GetComponent<AudioSource>();
+                    audioSource.playOnAwake = false;
+                    audioSource.Stop();
+                }
 
                 var rigidbody = fireball.GetComponent<Rigidbody>();
                 rigidbody.useGravity = true;
