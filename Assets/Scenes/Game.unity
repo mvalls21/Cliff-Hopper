@@ -491,7 +491,7 @@ MonoBehaviour:
   speed: 2.5
   gameManagerObject: {fileID: 1387127665}
   deadAudioClip: {fileID: 8300000, guid: 847dced5934b310deab422289810db1f, type: 3}
-  jumpAudioClip: {fileID: 0}
+  jumpAudioClip: {fileID: 8300000, guid: 601be63c346dc87ee91ea24aa6198422, type: 3}
   bloodParticle: {fileID: 3906019671403627523, guid: 297c175659d4ecb73aa3f89535a2d136, type: 3}
 --- !u!23 &225901889
 MeshRenderer:
@@ -606,7 +606,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -6653,7 +6653,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 01c1efced4eda2322bc943992771cc03, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.75
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0

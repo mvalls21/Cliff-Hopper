@@ -87,6 +87,8 @@ public class Player : MonoBehaviour
             }
             else if (_jumpCounter < 2)
             {
+                _audioSource.PlayOneShot(jumpAudioClip);
+
                 var rigidbody = GetComponent<Rigidbody>();
                 rigidbody.velocity = Vector3.up * 4.2f;
                 _jumpCounter++;
