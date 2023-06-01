@@ -92,14 +92,11 @@ public class GameManager : MonoBehaviour
     public void IncreaseCoin()
     {
         NumberCoins++;
-        Debug.Log($"Number of coins: {NumberCoins}");
     }
 
     public void IncreaseScore()
     {
         Score++;
-        Debug.Log($"Score: {Score}");
-
         ScoreChanged?.Invoke(this, Score);
     }
 
