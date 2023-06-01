@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
 
     public AudioClip deadAudioClip;
 
+    public AudioClip lavaDeathAudioClip;
+
     public AudioClip jumpAudioClip;
 
     private AudioSource _audioSource;
@@ -100,12 +102,12 @@ public class Player : MonoBehaviour
         // 
         if (_previousDirectionChangeObject == null && transform.position.y < -2.0f)
         {
-            PlayerDied();
+            PlayerDied(true);
         }
         else if (_previousDirectionChangeObject != null &&
                  _previousDirectionChangeObject.transform.position.y - transform.position.y > 4.0f)
         {
-            PlayerDied();
+            PlayerDied(true);
         }
 
         _spacePressed = Input.GetKey(KeyCode.Space);
@@ -117,7 +119,7 @@ public class Player : MonoBehaviour
         _gameManager.IncreaseScore();
     }
 
-    private void PlayerDied()
+    private void PlayerDied(bool lava = false)
     {
         if (!GameManager.IsPlayerAlive) return;
 
@@ -138,7 +140,11 @@ public class Player : MonoBehaviour
             rigidBody.AddForce(force, ForceMode.Impulse);
         }
 
-        _audioSource.PlayOneShot(deadAudioClip);
+        if (!lava)
+            _audioSource.PlayOneShot(deadAudioClip);
+        else
+            _audioSource.PlayOneShot(lavaDeathAudioClip);
+
         _gameManager.PlayerDied();
     }
 
