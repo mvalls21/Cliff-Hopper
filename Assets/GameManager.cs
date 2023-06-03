@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
 
     public Text coinIcon;
 
-    public bool IsPlayerAlive { get; private set; } = true;
-
+    public static bool IsPlayerAlive = true;
+    
     private int _numberCoins;
 
     public int NumberCoins
@@ -24,7 +24,9 @@ public class GameManager : MonoBehaviour
         private set
         {
             _numberCoins = value;
-            currentCoinsText.text = $"{value}";
+            
+            if (currentCoinsText != null)
+                currentCoinsText.text = $"{value}";
         }
     } 
 
@@ -36,9 +38,13 @@ public class GameManager : MonoBehaviour
         private set
         {
             _score = value;
-            currentScoreText.text = $"{value}";
+            
+            if (currentScoreText != null)
+                currentScoreText.text = $"{value}";
         }
     }
+
+    static public int MaxScore = 0;
 
     public event EventHandler<int> ScoreChanged;
 
@@ -47,9 +53,11 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         Score = 0;
-        NumberCoins = 0; // TODO: Should read from memory?
+        NumberCoins = PlayerPrefs.GetInt("NumberCoins");
+        MaxScore = PlayerPrefs.GetInt("MaxScore");
 
         _gameMusicSource = GetComponent<AudioSource>();
+        IsPlayerAlive = true;
     }
 
     public void PlayerDied()
@@ -62,24 +70,33 @@ public class GameManager : MonoBehaviour
         Destroy(currentScoreText);
         Destroy(currentCoinsText);
         Destroy(coinIcon);
+
+        currentCoinsText = null;
+        currentCoinsText = null;
         
         _gameMusicSource.Stop();
+
+        if (Score > MaxScore)
+        {
+            MaxScore = Score;
+            PlayerPrefs.SetInt("MaxScore", MaxScore);
+        }
+        
+        PlayerPrefs.SetInt("NumberCoins", NumberCoins);
+        PlayerPrefs.Save();
         
         var screen = playerDeadScreen.GetComponent<DeadScreenController>();
-        screen.Show(Score);
+        screen.Show(Score, MaxScore);
     }
 
     public void IncreaseCoin()
     {
         NumberCoins++;
-        Debug.Log($"Number of coins: {NumberCoins}");
     }
 
     public void IncreaseScore()
     {
         Score++;
-        Debug.Log($"Score: {Score}");
-
         ScoreChanged?.Invoke(this, Score);
     }
 

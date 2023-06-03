@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
@@ -14,6 +15,16 @@ public class Player : MonoBehaviour
 
     private GameManager _gameManager;
 
+    public AudioClip deadAudioClip;
+
+    public AudioClip lavaDeathAudioClip;
+
+    public AudioClip jumpAudioClip;
+
+    private AudioSource _audioSource;
+
+    public GameObject bloodParticle;
+
     private int _jumpCounter = 0;
 
     private bool _spacePressed = false;
@@ -23,11 +34,12 @@ public class Player : MonoBehaviour
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _gameManager = gameManagerObject.GetComponent<GameManager>();
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+        _audioSource = GetComponent<AudioSource>();
     }
 
     public void Update()
     {
-        if (!_gameManager.IsPlayerAlive)
+        if (!GameManager.IsPlayerAlive)
             return;
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
@@ -40,7 +52,10 @@ public class Player : MonoBehaviour
             var rigidBody = GetComponent<Rigidbody>();
             rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
 
-            _gameManager.PlayerDied();
+            var spikesController = hitInfo.collider.GetComponent<SpikesController>();
+            spikesController.CollisionPlayer();
+
+            PlayerDied();
             return;
         }
 
@@ -74,6 +89,8 @@ public class Player : MonoBehaviour
             }
             else if (_jumpCounter < 2)
             {
+                _audioSource.PlayOneShot(jumpAudioClip);
+
                 var rigidbody = GetComponent<Rigidbody>();
                 rigidbody.velocity = Vector3.up * 4.2f;
                 _jumpCounter++;
@@ -85,12 +102,12 @@ public class Player : MonoBehaviour
         // 
         if (_previousDirectionChangeObject == null && transform.position.y < -2.0f)
         {
-            _gameManager.PlayerDied();
+            PlayerDied(true);
         }
         else if (_previousDirectionChangeObject != null &&
                  _previousDirectionChangeObject.transform.position.y - transform.position.y > 4.0f)
         {
-            _gameManager.PlayerDied();
+            PlayerDied(true);
         }
 
         _spacePressed = Input.GetKey(KeyCode.Space);
@@ -102,11 +119,40 @@ public class Player : MonoBehaviour
         _gameManager.IncreaseScore();
     }
 
+    private void PlayerDied(bool lava = false)
+    {
+        if (!GameManager.IsPlayerAlive) return;
+
+        var mesh = GetComponent<MeshRenderer>();
+        Destroy(mesh);
+
+        for (int i = 0; i < 8; ++i)
+        {
+            var blood = Instantiate(bloodParticle);
+            blood.transform.position = transform.position;
+
+            var rigidBody = blood.GetComponent<Rigidbody>();
+
+            var horizontalStrength = 1.0f;
+            var direction = i % 2 == 0 ? 1 : -1;
+            var force = new Vector3(horizontalStrength * movementDirection.z * direction, 1.0f,
+                horizontalStrength * movementDirection.x * direction);
+            rigidBody.AddForce(force, ForceMode.Impulse);
+        }
+
+        if (!lava)
+            _audioSource.PlayOneShot(deadAudioClip);
+        else
+            _audioSource.PlayOneShot(lavaDeathAudioClip);
+
+        _gameManager.PlayerDied();
+    }
+
     public void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.name == "RollingStone")
         {
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
         else
         {
@@ -121,7 +167,7 @@ public class Player : MonoBehaviour
             var rigidbody = GetComponent<Rigidbody>();
             rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
 
-            _gameManager.PlayerDied();
+            PlayerDied();
         }
     }
 }
