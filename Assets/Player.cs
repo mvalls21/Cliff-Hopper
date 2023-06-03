@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
         //
         // Spike collision
         //
-        if (hit && hitInfo.collider.CompareTag("Spike") && _jumpCounter == 0)
+        if (hit && hitInfo.collider.CompareTag("Spike") && _jumpCounter == 0 && !_gameManager.GodModeActive)
         {
             var rigidBody = GetComponent<Rigidbody>();
             rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
@@ -63,7 +63,8 @@ public class Player : MonoBehaviour
         // Movement
         //
         var movementSpeed = speed;
-        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0)
+        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0 &&
+            !_gameManager.GodModeActive)
             movementSpeed = speed / 2.0f;
 
         var newPosition = transform.position + movementDirection * Time.deltaTime;
@@ -150,7 +151,7 @@ public class Player : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.name == "RollingStone")
+        if (other.gameObject.name == "RollingStone" && !_gameManager.GodModeActive)
         {
             PlayerDied();
         }
@@ -162,7 +163,7 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Fireball"))
+        if (other.CompareTag("Fireball") && !_gameManager.GodModeActive)
         {
             var rigidbody = GetComponent<Rigidbody>();
             rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);

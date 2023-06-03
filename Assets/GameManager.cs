@@ -2,19 +2,39 @@ using System;
 using Unity.VisualScripting.FullSerializer.Internal.Converters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    #region Game Overlay Canvas
+    
     public Canvas playerDeadScreen;
 
     public Text currentScoreText;
 
     public Text currentCoinsText;
 
+    public Text godModeText;
+    
     public Text coinIcon;
+    
+    #endregion
 
     public static bool IsPlayerAlive = true;
+
+
+    private bool _godModeActive = false;
+
+    public bool GodModeActive
+    {
+        get => _godModeActive;
+        private set
+        {
+            _godModeActive = value;
+            godModeText.gameObject.SetActive(value);
+        }
+    }
     
     private int _numberCoins;
 
@@ -58,6 +78,18 @@ public class GameManager : MonoBehaviour
 
         _gameMusicSource = GetComponent<AudioSource>();
         IsPlayerAlive = true;
+    }
+
+    private bool _gPressed;
+    
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.G) && !_gPressed)
+        {
+            GodModeActive = !GodModeActive;
+        }
+
+        _gPressed = Input.GetKey(KeyCode.G);
     }
 
     public void PlayerDied()
