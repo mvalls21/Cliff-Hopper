@@ -18,6 +18,8 @@ public class LevelGeneration : MonoBehaviour
 
     public float coinProb = 0.1f;
 
+    public float decorationFireballProb = 0.02f;
+
     #endregion
 
     #region Prefabs
@@ -33,6 +35,8 @@ public class LevelGeneration : MonoBehaviour
 
     public GameObject coinPrefab;
 
+    public GameObject decorationVolcano;
+
     #endregion
 
     private int _platformsSinceCoin = 0;
@@ -46,6 +50,8 @@ public class LevelGeneration : MonoBehaviour
 
     private float xPos, yPos, zPos;
     private int _numberPaths;
+
+    private GameObject _previousDirectionChange = null;
 
     public void Start()
     {
@@ -95,6 +101,8 @@ public class LevelGeneration : MonoBehaviour
         var path = new Path() { platforms = new List<GameObject>() };
 
         var numberBlocks = Random.Range(1, 6); // between 1 and 5 blocks
+        if (pathNum == 0) numberBlocks = 4; // If first path, at least 4 blocks
+
         for (int blockNum = 0; blockNum < numberBlocks; ++blockNum)
         {
             xPos += dx;
@@ -190,6 +198,21 @@ public class LevelGeneration : MonoBehaviour
                 placedPlatform = PlatformType.Normal;
             }
 
+
+            if (Random.value <= decorationFireballProb && _previousDirectionChange != null && pathNum % 2 != 0) 
+            {
+                obj = Instantiate(decorationVolcano);
+
+                var controller = obj.GetComponent<DecorationVolcanoController>();
+                controller.fireballPrefab = fireballPrefab;
+                controller.previousDirectionChange = _previousDirectionChange;
+
+                // position in -z
+                obj.transform.position = new Vector3(xPos, yPos - 20.0f, zPos - 5.0f);
+
+                path.platforms.Add(obj);
+            }
+
             obj.transform.parent = transform;
 
             if (placedPlatform == _previousPlatform)
@@ -230,12 +253,16 @@ public class LevelGeneration : MonoBehaviour
         obj.transform.position = new Vector3(xPos, yPos, zPos);
         obj.transform.parent = transform;
 
+        _previousDirectionChange = obj;
+
         // TODO: Temporal
         for (int i = 1; i < 10; ++i)
         {
             obj = Instantiate(normalPrefab);
             obj.transform.position = new Vector3(xPos, yPos - i, zPos);
             obj.transform.parent = transform;
+
+            path.platforms.Add(obj);
         }
         // ==============
 

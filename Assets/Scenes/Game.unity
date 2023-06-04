@@ -2717,6 +2717,7 @@ MonoBehaviour:
   fireLauncherProb: 0.08
   volcanoProb: 0.11
   coinProb: 0.1
+  decorationFireballProb: 0.1
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
   spikesPrefab: {fileID: 8175825739093076404, guid: 861ba5ca0c75f9352a5efcabecddbfb3, type: 3}
   slopePrefab: {fileID: 773842026195072642, guid: e72fa46a8dc100cecb528007ec5605ab, type: 3}
@@ -2726,6 +2727,7 @@ MonoBehaviour:
   fireballPrefab: {fileID: 3861773860401276706, guid: 0d5f8bb2fa30821309cc7be7374aea96, type: 3}
   volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
+  decorationVolcano: {fileID: 2272679380680939516, guid: a28c67e324d4fe5cbba8c1447f43b254, type: 3}
   minimumPathsInstantiated: 8
 --- !u!4 &1110724294
 Transform:
@@ -4188,7 +4190,7 @@ Transform:
   m_GameObject: {fileID: 1902600800}
   m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
   m_LocalPosition: {x: 0, y: 0, z: 25}
-  m_LocalScale: {x: 20, y: 30, z: 1}
+  m_LocalScale: {x: 50, y: 30, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 963194228}
