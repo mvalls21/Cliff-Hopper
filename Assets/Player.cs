@@ -23,11 +23,14 @@ public class Player : PausableRigidBody
 
     private bool _spacePressed = false;
 
+    private Animator _animator;
+
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         _audioSource = GetComponent<AudioSource>();
+        _animator = GetComponent<Animator>();
 
         SetupPausableRigidBody();
     }
@@ -89,6 +92,11 @@ public class Player : PausableRigidBody
 
                 var rigidbody = GetComponent<Rigidbody>();
                 rigidbody.velocity = Vector3.up * 4.2f;
+
+                _animator.SetBool("IsJumping", true);
+                if (_jumpCounter == 1)
+                    _animator.SetBool("SecondJump", true);
+                    
                 _jumpCounter++;
             }
         }
@@ -153,6 +161,8 @@ public class Player : PausableRigidBody
         else
         {
             _jumpCounter = 0;
+            _animator.SetBool("IsJumping", false);
+            _animator.SetBool("SecondJump", false);
         }
     }
 
