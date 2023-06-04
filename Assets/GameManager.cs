@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     public Canvas pauseScreen;
 
+    public Canvas victoryScreen;
+
     #endregion
 
     public bool IsPlayerAlive = true;
@@ -186,5 +188,16 @@ public class GameManager : MonoBehaviour
         if (!IsGamePaused) return;
         IsGamePaused = false;
         gameOverlayCanvas.gameObject.SetActive(true);
+    }
+
+    public void PlayerFinished()
+    {
+        IsPlayerAlive = false;
+        gameOverlayCanvas.gameObject.SetActive(false);
+
+        _gameMusicSource.Stop();
+
+        var screen = victoryScreen.GetComponent<VictoryScreenController>();
+        screen.Show();
     }
 }

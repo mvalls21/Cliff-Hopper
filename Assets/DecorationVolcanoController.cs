@@ -30,7 +30,7 @@ public class DecorationVolcanoController : MonoBehaviour
             _fireballLaunched = true;
         }
 
-        if (_fireballLaunched && _fireball.transform.position.y < transform.position.y - 1.0f) {
+        if (_fireballLaunched && _fireball != null && _fireball.transform.position.y < transform.position.y - 1.0f) {
             Destroy(_fireball);
             _fireball = null;
         }

@@ -44,6 +44,8 @@ public class LevelGeneration : MonoBehaviour
     private PlatformType _previousPlatform;
     private int _numberSamePlatformPrevious;
 
+    public int LimitedModeNumberPaths = 30;
+
     public static bool InfiniteGeneration = true;
     public int minimumPathsInstantiated = 5;
     private readonly Queue<Path> _placedPaths = new Queue<Path>();
@@ -56,8 +58,7 @@ public class LevelGeneration : MonoBehaviour
     public void Start()
     {
         _gameManager = gameManagerObject.GetComponent<GameManager>();
-        if (InfiniteGeneration)
-            _gameManager.ScoreChanged += OnScoreChanged;
+        _gameManager.ScoreChanged += OnScoreChanged;
 
         GameObject obj;
         xPos = zPos = yPos = 0.0f;
@@ -76,7 +77,7 @@ public class LevelGeneration : MonoBehaviour
         _previousPlatform = PlatformType.Normal;
         _numberSamePlatformPrevious = 0;
 
-        var numberPaths = InfiniteGeneration ? minimumPathsInstantiated : 30;
+        var numberPaths = InfiniteGeneration ? minimumPathsInstantiated : LimitedModeNumberPaths;
         for (var pathNum = 0; pathNum < numberPaths; ++pathNum)
         {
             var path = GeneratePath(pathNum);
@@ -289,6 +290,14 @@ public class LevelGeneration : MonoBehaviour
 
     private void OnScoreChanged(object _, int score)
     {
+        if (!LevelGeneration.InfiniteGeneration && score == LimitedModeNumberPaths)
+        {
+            _gameManager.PlayerFinished();
+            return;
+        }
+
+        if (!InfiniteGeneration) return;
+
         if (score >= minimumPathsInstantiated)
         {
             // Destroy path
