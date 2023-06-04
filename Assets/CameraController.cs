@@ -25,6 +25,9 @@ public class CameraController : MonoBehaviour
 
     public void Update()
     {
+        if (GameManager.Instance.IsGamePaused)
+            return;
+
         var middle = FindMiddlePlatformRaycast();
         // var middle = FindMiddlePlatform();
 

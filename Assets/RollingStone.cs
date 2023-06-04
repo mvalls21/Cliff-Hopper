@@ -13,7 +13,7 @@ public class RollingStone : MonoBehaviour
     public float speed = 2.0f;
 
     private GameObject _previousDirectionChange;
-    
+
     private Rigidbody _rigidbody;
 
     public void Start()
@@ -27,6 +27,9 @@ public class RollingStone : MonoBehaviour
 
     public void Update()
     {
+        if (GameManager.Instance.IsGamePaused)
+            return;
+
         _rigidbody.useGravity = true;
         transform.Translate(_movementDirection * speed * Time.deltaTime);
 

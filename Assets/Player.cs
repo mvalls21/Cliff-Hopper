@@ -1,19 +1,13 @@
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Serialization;
 
-public class Player : MonoBehaviour
+public class Player : PausableRigidBody
 {
     public Vector3 movementDirection { get; private set; }
 
     public float speed = 2.0f;
 
     private GameObject _previousDirectionChangeObject;
-
-    public GameObject gameManagerObject;
-
-    private GameManager _gameManager;
 
     public AudioClip deadAudioClip;
 
@@ -32,14 +26,15 @@ public class Player : MonoBehaviour
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
-        _gameManager = gameManagerObject.GetComponent<GameManager>();
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         _audioSource = GetComponent<AudioSource>();
+
+        SetupPausableRigidBody();
     }
 
     public void Update()
     {
-        if (!GameManager.IsPlayerAlive)
+        if (!GameManager.Instance.IsPlayerAlive || GameManager.Instance.IsGamePaused)
             return;
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
@@ -47,7 +42,7 @@ public class Player : MonoBehaviour
         //
         // Spike collision
         //
-        if (hit && hitInfo.collider.CompareTag("Spike") && _jumpCounter == 0)
+        if (hit && hitInfo.collider.CompareTag("Spike") && _jumpCounter == 0 && !GameManager.Instance.GodModeActive)
         {
             var rigidBody = GetComponent<Rigidbody>();
             rigidBody.AddForce(new Vector3(0.0f, 10.0f, 5.0f), ForceMode.Impulse);
@@ -63,7 +58,8 @@ public class Player : MonoBehaviour
         // Movement
         //
         var movementSpeed = speed;
-        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0)
+        if (hit && hitInfo.collider.GameObject().CompareTag("Slowdown") && _jumpCounter == 0 &&
+            !GameManager.Instance.GodModeActive)
             movementSpeed = speed / 2.0f;
 
         var newPosition = transform.position + movementDirection * Time.deltaTime;
@@ -116,12 +112,12 @@ public class Player : MonoBehaviour
     private void ChangeDirection()
     {
         movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
-        _gameManager.IncreaseScore();
+        GameManager.Instance.IncreaseScore();
     }
 
     private void PlayerDied(bool lava = false)
     {
-        if (!GameManager.IsPlayerAlive) return;
+        if (!GameManager.Instance.IsPlayerAlive) return;
 
         var mesh = GetComponent<MeshRenderer>();
         Destroy(mesh);
@@ -145,12 +141,12 @@ public class Player : MonoBehaviour
         else
             _audioSource.PlayOneShot(lavaDeathAudioClip);
 
-        _gameManager.PlayerDied();
+        GameManager.Instance.PlayerDied();
     }
 
     public void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.name == "RollingStone")
+        if (other.gameObject.name == "RollingStone" && !GameManager.Instance.GodModeActive)
         {
             PlayerDied();
         }
@@ -162,11 +158,9 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Fireball"))
+        if (other.CompareTag("Fireball") && !GameManager.Instance.GodModeActive)
         {
-            var rigidbody = GetComponent<Rigidbody>();
-            rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
-
+            _rigidbody.AddForce(new Vector3(-10.0f, 7.0f, 0.0f), ForceMode.Impulse);
             PlayerDied();
         }
     }
