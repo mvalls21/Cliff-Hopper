@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : PausableRigidBody
 {
-    public Vector3 movementDirection { get; private set; }
+    public Vector3 movementDirection => transform.forward;
 
     public float speed = 2.0f;
 
@@ -28,7 +28,8 @@ public class Player : PausableRigidBody
 
     public void Start()
     {
-        movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
+        transform.forward = new Vector3(0.0f, 0.0f, 1.0f);
+        // movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         _audioSource = GetComponent<AudioSource>();
 
@@ -71,8 +72,14 @@ public class Player : PausableRigidBody
         var centerPosition = new Vector3(Mathf.Round(newPosition.x), newPosition.y, Mathf.Round(newPosition.z));
 
         // Only apply correction to the axis where the player is not moving (to prevent stutters while moving)
-        var movement = Vector3.Scale((centerPosition - transform.position),
-            (Vector3.one - movementDirection)) + movementDirection;
+        var correction = Vector3.Scale(centerPosition - transform.position, Vector3.one - movementDirection);
+
+        if (Math.Abs(movementDirection.x - 1.0f) < 0.01f) 
+        {
+            correction = new Vector3(-correction.z, 0.0f, 0.0f);
+        }
+
+        var movement = correction + new Vector3(0.0f, 0.0f, 1.0f);
 
         transform.Translate(movement * movementSpeed * Time.deltaTime);
 
@@ -121,7 +128,7 @@ public class Player : PausableRigidBody
 
     private void ChangeDirection()
     {
-        movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - movementDirection;
+        transform.forward = new Vector3(1.0f, 0.0f, 1.0f) - transform.forward;
         GameManager.Instance.IncreaseScore();
     }
 
