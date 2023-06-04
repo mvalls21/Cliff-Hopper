@@ -49,12 +49,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private bool _godModeActive = false;
+    private bool _godModeActive = true;
 
     public bool GodModeActive
     {
         get => _godModeActive;
-        private set
+        set
         {
             _godModeActive = value;
             godModeText.gameObject.SetActive(value);

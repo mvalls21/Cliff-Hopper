@@ -290,6 +290,9 @@ public class LevelGeneration : MonoBehaviour
 
     private void OnScoreChanged(object _, int score)
     {
+        if (score == 1)
+            GameManager.Instance.GodModeActive = false;
+
         if (!LevelGeneration.InfiniteGeneration && score == LimitedModeNumberPaths)
         {
             _gameManager.PlayerFinished();
