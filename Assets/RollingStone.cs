@@ -10,7 +10,7 @@ public class RollingStone : MonoBehaviour
 
     private Player _playerScript;
 
-    public float speed = 2.0f;
+    private float _speed = 2.0f;
 
     private GameObject _previousDirectionChange;
 
@@ -20,7 +20,7 @@ public class RollingStone : MonoBehaviour
     {
         _movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         _playerScript = playerGameObject.GetComponent<Player>();
-        speed = _playerScript.speed;
+        _speed = _playerScript.speed;
 
         _rigidbody = GetComponent<Rigidbody>();
     }
@@ -31,7 +31,7 @@ public class RollingStone : MonoBehaviour
             return;
 
         _rigidbody.useGravity = true;
-        transform.Translate(_movementDirection * speed * Time.deltaTime);
+        transform.Translate(_movementDirection * _speed * Time.deltaTime);
 
         var hit = Physics.Raycast(transform.position, Vector3.down, out RaycastHit info);
         if (hit && info.collider.CompareTag("DirectionChange") && info.collider.GameObject() != _previousDirectionChange
@@ -57,7 +57,7 @@ public class RollingStone : MonoBehaviour
 
     private void ChangeDirection()
     {
-        _movementDirection = new Vector3(1.0f, 0.0f, 1.0f) - _movementDirection;
+        transform.forward = new Vector3(1.0f, 0.0f, 1.0f) - transform.forward;
         transform.position = new Vector3(Mathf.Round(transform.position.x), transform.position.y,
             Mathf.Round(transform.position.z));
     }
