@@ -4,6 +4,8 @@ using UnityEngine;
     {
         protected Rigidbody _rigidbody;
 
+        protected Animator _animator;
+
         private Vector3 _pausedVelocity;
 
         private Vector3 _pausedAngularVelocity;
@@ -13,6 +15,7 @@ using UnityEngine;
             GameManager.Instance.GamePausedChanged += OnPauseChanged;
 
             _rigidbody = GetComponent<Rigidbody>();
+            _animator = GetComponent<Animator>();
             _pausedVelocity = _rigidbody.velocity;
             _pausedAngularVelocity = _rigidbody.angularVelocity;
         }
@@ -29,12 +32,18 @@ using UnityEngine;
                 _pausedVelocity = _rigidbody.velocity;
                 _pausedAngularVelocity = _rigidbody.angularVelocity;
                 _rigidbody.isKinematic = true;
+
+                if (_animator != null)
+                    _animator.speed = 0;
             }
             else
             {
                 _rigidbody.isKinematic = false;
                 _rigidbody.velocity = _pausedVelocity;
                 _rigidbody.angularVelocity = _pausedAngularVelocity;
+
+                if (_animator != null)
+                    _animator.speed = 1;
             }
         }
     }

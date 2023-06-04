@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -23,14 +24,15 @@ public class Player : PausableRigidBody
 
     private bool _spacePressed = false;
 
-    private Animator _animator;
+    private SkinnedMeshRenderer _renderer;
 
     public void Start()
     {
         movementDirection = new Vector3(0.0f, 0.0f, 1.0f);
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         _audioSource = GetComponent<AudioSource>();
-        _animator = GetComponent<Animator>();
+
+        _renderer = transform.GetChild(0).GetComponent<SkinnedMeshRenderer>();
 
         SetupPausableRigidBody();
     }
@@ -96,7 +98,7 @@ public class Player : PausableRigidBody
                 _animator.SetBool("IsJumping", true);
                 if (_jumpCounter == 1)
                     _animator.SetBool("SecondJump", true);
-                    
+
                 _jumpCounter++;
             }
         }
@@ -127,8 +129,7 @@ public class Player : PausableRigidBody
     {
         if (!GameManager.Instance.IsPlayerAlive) return;
 
-        var mesh = GetComponent<MeshRenderer>();
-        Destroy(mesh);
+        Destroy(_renderer);
 
         for (int i = 0; i < 8; ++i)
         {
