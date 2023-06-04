@@ -2745,7 +2745,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1fa60a9da2f439951beebb8f47ef2a8c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c4097b3e240b18f2198249a670899837, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.8
   m_Pitch: 1
@@ -3153,7 +3153,7 @@ MonoBehaviour:
   volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
   decorationVolcano: {fileID: 2272679380680939516, guid: a28c67e324d4fe5cbba8c1447f43b254, type: 3}
-  LimitedModeNumberPaths: 30
+  LimitedModeNumberPaths: 10
   minimumPathsInstantiated: 8
 --- !u!4 &1110724294
 Transform:

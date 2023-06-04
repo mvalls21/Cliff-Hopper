@@ -8,6 +8,9 @@ public class VictoryScreenController : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+
+        var victoryMenuSource  = GetComponent<AudioSource>();
+        victoryMenuSource.Play();
     }
 
     public void PlayAgain()
