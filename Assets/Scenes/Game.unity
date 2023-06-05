@@ -3146,11 +3146,12 @@ MonoBehaviour:
   normalPrefab: {fileID: 4036006085463490100, guid: 6415ac153cf31d8068a90370c359bb6d, type: 3}
   spikesPrefab: {fileID: 8175825739093076404, guid: 861ba5ca0c75f9352a5efcabecddbfb3, type: 3}
   slopePrefab: {fileID: 773842026195072642, guid: e72fa46a8dc100cecb528007ec5605ab, type: 3}
-  changeDirectionPrefab: {fileID: 4036006085463490100, guid: b66f7b8829e5ae5d6b759f17a609378d, type: 3}
+  changeDirectionPrefab: {fileID: 2840370760795928752, guid: b66f7b8829e5ae5d6b759f17a609378d, type: 3}
   slowdownPrefab: {fileID: 4679345841291289286, guid: c8a2cf7f8abd278db85d5bca87cadc8f, type: 3}
   fireLauncherPrefab: {fileID: 3450150109343074723, guid: 33f0b35a03e2ec07db8004e21ba7450a, type: 3}
   fireballPrefab: {fileID: 3861773860401276706, guid: 0d5f8bb2fa30821309cc7be7374aea96, type: 3}
   volcanoPrefab: {fileID: 2272679380680939516, guid: 8232c7198c661c334ac75b0631e57c10, type: 3}
+  pillarPrefab: {fileID: 4036006085463490100, guid: 7611f56ee7117f7b9bea9130eb1811b3, type: 3}
   coinPrefab: {fileID: 1976708717949504584, guid: 9fbed0eaa0b21b115ade8c8b6e62f0f1, type: 3}
   decorationVolcano: {fileID: 2272679380680939516, guid: a28c67e324d4fe5cbba8c1447f43b254, type: 3}
   LimitedModeNumberPaths: 30

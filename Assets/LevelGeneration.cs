@@ -32,6 +32,7 @@ public class LevelGeneration : MonoBehaviour
     public GameObject fireLauncherPrefab;
     public GameObject fireballPrefab;
     public GameObject volcanoPrefab;
+    public GameObject pillarPrefab;
 
     public GameObject coinPrefab;
 
@@ -259,7 +260,7 @@ public class LevelGeneration : MonoBehaviour
         // TODO: Temporal
         for (int i = 1; i < 10; ++i)
         {
-            obj = Instantiate(normalPrefab);
+            obj = Instantiate(pillarPrefab);
             obj.transform.position = new Vector3(xPos, yPos - i, zPos);
             obj.transform.parent = transform;
 
