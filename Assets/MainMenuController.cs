@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    public GameObject mainMenuScreen;
+
+    public Canvas instruccionsScreen;
+
     private AudioSource _audioSource;
 
     private bool _gameStarting = false;
@@ -12,6 +16,11 @@ public class MainMenuController : MonoBehaviour
     public GameObject backgroundMusicObject;
 
     private AudioSource _backgroundSource;
+
+    public GameObject cacodemon;
+    public GameObject directionChange;
+    public GameObject spikes;
+    public GameObject coin;
 
     public void Start()
     {
@@ -33,6 +42,28 @@ public class MainMenuController : MonoBehaviour
         
         LevelGeneration.InfiniteGeneration = false;
         StartCoroutine(StartGame());
+    }
+
+    public void OpenInstructions()
+    {
+        mainMenuScreen.SetActive(false);
+        instruccionsScreen.gameObject.SetActive(true);
+
+        cacodemon.SetActive(true);
+        spikes.SetActive(true);
+        directionChange.SetActive(true);
+        coin.SetActive(true);
+    }
+
+    public void ExitInstructions()
+    {
+        mainMenuScreen.SetActive(true);
+        instruccionsScreen.gameObject.SetActive(false);
+
+        cacodemon.SetActive(false);
+        spikes.SetActive(false);
+        directionChange.SetActive(false);
+        coin.SetActive(false);
     }
 
     public void Quit()
