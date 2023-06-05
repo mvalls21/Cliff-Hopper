@@ -93,6 +93,8 @@ public class Player : PausableRigidBody
                 _jumpCounter == 0)
             {
                 _previousDirectionChangeObject = hitInfo.collider.GameObject();
+                _previousDirectionChangeObject.transform.Find("default").gameObject.transform.Find("default").gameObject.GetComponent<MeshRenderer>().enabled = false;
+                _previousDirectionChangeObject.transform.Find("direction2").gameObject.transform.Find("default").gameObject.GetComponent<MeshRenderer>().enabled = true;
                 ChangeDirection();
             }
             else if (_jumpCounter < 2)

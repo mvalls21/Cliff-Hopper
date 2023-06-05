@@ -22,6 +22,8 @@ public class DecorationVolcanoController : MonoBehaviour
             _fireball.transform.position = transform.position;
 
             _fireball.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+            var tr = _fireball.GetComponent<TrailRenderer>();
+            tr.widthMultiplier = 5.0f;
 
             var rigidbody = _fireball.GetComponent<Rigidbody>();
             rigidbody.useGravity = true;
